@@ -71,6 +71,7 @@ async def button(update: Update, context: CallbackQueryHandler) -> None:
         txt = f"""<i>Pagamento realizado com sucesso! Faça bom proveito do seu pedido.</i>\n\n<code>{carta[0]["ID"]}</code>. <strong>{carta[0]["nome"]}</strong> - {obra["nome"]}\n\n(<code>{quantasTem}x</code>)"""
         await query.edit_message_media(media=InputMediaPhoto(media=carta[0]["imagem"], caption=txt, parse_mode="HTML"))
 
+    ############## handlers de paginar a pesquisa das obras ################
     if "proxima_search_obras_" in query.data:
         await pagina_obras_proxima(update, context)
 
@@ -97,7 +98,59 @@ async def button(update: Update, context: CallbackQueryHandler) -> None:
     if "possuo_anterior_" in query.data:
         await possuo_anterior(update, context)
 
-##########################################################################################################
+    ############## paginar as obras das categorias ##################
+    if "obs_categoria_anterior_" in query.data:
+        await obs_categoria_anterior(update, context)
+    
+    if "obs_categoria_proximo_" in query.data:
+        await obs_categoria_proximo(update, context)
+
+#################################################################################################
+async def obs_categoria_anterior(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    user_id = update.callback_query.from_user.id
+    data = update.callback_query.data.split("_")
+
+    categoria = data[3]
+    pagina = data[4]
+
+    if int(pagina) < 1:
+        pagina = Obra.obras_da_categoria(categoria)['totalPages']
+    else:
+        pagina = pagina
+
+    retorno = Obra.obras_da_categoria(categoria, pagina)
+
+    mensagem = formatar.FormatadorMensagem.formatar_obras_categoria(retorno, categoria)
+    botoes = [
+        InlineKeyboardButton("⬅️", callback_data=f"obs_categoria_anterior_{categoria}_{retorno['currentPage'] - 1}"),
+        InlineKeyboardButton("➡️", callback_data=f"obs_categoria_proximo_{categoria}_{retorno['currentPage'] + 1}")
+    ]
+    teclado = InlineKeyboardMarkup([botoes])
+    await update.callback_query.edit_message_text(mensagem, reply_markup=teclado, parse_mode="HTML")
+
+async def obs_categoria_proximo(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    user_id = update.callback_query.from_user.id
+    data = update.callback_query.data.split("_")
+    categoria = data[3]
+    pagina = data[4]
+
+    if int(pagina) > Obra.obras_da_categoria(categoria)['totalPages']:
+        pagina = 1
+    else:
+        pagina = pagina
+
+    retorno = Obra.obras_da_categoria(categoria, pagina)
+
+    mensagem = formatar.FormatadorMensagem.formatar_obras_categoria(retorno, categoria)
+    botoes = [
+        InlineKeyboardButton("⬅️", callback_data=f"obs_categoria_anterior_{categoria}_{retorno['currentPage'] - 1}"),
+        InlineKeyboardButton("➡️", callback_data=f"obs_categoria_proximo_{categoria}_{retorno['currentPage'] + 1}")
+    ]
+    teclado = InlineKeyboardMarkup([botoes])
+    await update.callback_query.edit_message_text(mensagem, reply_markup=teclado, parse_mode="HTML")
+
+#################################################################################################
+
 async def possuo_proximo(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.callback_query.data.split("_")[2]
     info = [update.callback_query.data.split("_")[2], update.callback_query.data.split("_")[3], update.callback_query.data.split("_")[4], update.callback_query.data.split("_")[5]]

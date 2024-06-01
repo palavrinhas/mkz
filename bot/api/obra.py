@@ -2,8 +2,8 @@ import httpx
 from telegram import InlineKeyboardButton
 
 class Obra:
-    def obras_da_categoria(categoria: str) -> str:
-        r = httpx.get(f"http://localhost:3000/obras?categoria={categoria}").json()
+    def obras_da_categoria(categoria: str, pagina=1) -> str:
+        r = httpx.get(f"http://localhost:3000/obras?categoria={categoria}&page={pagina}").json()
         return r
 
     def criar_obra(nome, categoria, creditos):
