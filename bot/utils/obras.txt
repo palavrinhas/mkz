@@ -1,0 +1,101 @@
+Titanic|1|imagem
+Breaking Bad|2|imagem
+Toy Story|3|imagem
+The Legend of Zelda: Breath of the Wild|Jogos|imagem
+Abbey Road (The Beatles)|4|imagem
+The Matrix|Multi|imagem
+Pulp Fiction|1|imagem
+Friends|2|imagem
+Shrek|3|imagem
+Minecraft|Jogos|imagem
+Bohemian Rhapsody (Queen)|4|imagem
+Harry Potter|Multi|imagem
+Forrest Gump|1|imagem
+Game of Thrones|2|imagem
+Frozen|3|imagem
+The Witcher 3: Wild Hunt|Jogos|imagem
+Imagine (John Lennon)|4|imagem
+Marvel Cinematic Universe|Multi|imagem
+Inception|1|imagem
+Stranger Things|2|imagem
+Mulan|3|imagem
+Grand Theft Auto V|Jogos|imagem
+Hotel California (Eagles)|4|imagem
+The Sims|Multi|imagem
+The Shawshank Redemption|1|imagem
+The Office|2|imagem
+Up: Altas Aventuras|3|imagem
+The Legend of Zelda: Ocarina of Time|Jogos|imagem
+Stairway to Heaven (Led Zeppelin)|4|imagem
+Pokémon|Multi|imagem
+Avatar|1|imagem
+Sherlock|2|imagem
+Toy Story 4|3|imagem
+Red Dead Redemption 2|Jogos|imagem
+Smells Like Teen Spirit (Nirvana)|4|imagem
+Star Wars|Multi|imagem
+The Godfather|1|imagem
+The Crown|2|imagem
+Zootopia|3|imagem
+League of Legends|Jogos|imagem
+Sweet Child o' Mine (Guns N' Roses)|4|imagem
+The Sims|Multi|imagem
+The Dark Knight|1|imagem
+Rick and Morty|2|imagem
+How to Train Your Dragon|3|imagem
+Super Mario Odyssey|Jogos|imagem
+Bohemian Rhapsody (Queen)|4|imagem
+World of Warcraft|Multi|imagem
+The Lord of the Rings|1|imagem
+The Big Bang Theory|2|imagem
+Finding Nemo|3|imagem
+Among Us|Jogos|imagem
+Hotel California (Eagles)|4|imagem
+The Legend of Zelda|Multi|imagem
+Interstellar|1|imagem
+Black Mirror|2|imagem
+Ratatouille|3|imagem
+Minecraft|Jogos|imagem
+Stairway to Heaven (Led Zeppelin)|4|imagem
+Assassin's Creed|Multi|imagem
+The Avengers|1|imagem
+The Office|2|imagem
+Coco|3|imagem
+Fortnite|Jogos|imagem
+Smells Like Teen Spirit (Nirvana)|4|imagem
+The Legend of Zelda|Multi|imagem
+The Shawshank Redemption|1|imagem
+Stranger Things|2|imagem
+Toy Story|3|imagem
+The Witcher 3: Wild Hunt|Jogos|imagem
+Sweet Child o' Mine (Guns N' Roses)|4|imagem
+Marvel Cinematic Universe|Multi|imagem
+Inception|1|imagem
+Friends|2|imagem
+Up: Altas Aventuras|3|imagem
+Grand Theft Auto V|Jogos|imagem
+Hotel California (Eagles)|4|imagem
+Harry Potter|Multi|imagem
+Pulp Fiction|1|imagem
+Game of Thrones|2|imagem
+Frozen|3|imagem
+The Sims|Jogos|imagem
+Imagine (John Lennon)|4|imagem
+Avatar|1|imagem
+Sherlock|2|imagem
+Mulan|3|imagem
+The Legend of Zelda: Ocarina of Time|Jogos|imagem
+Smells Like Teen Spirit (Nirvana)|4|imagem
+Star Wars|Multi|imagem
+The Godfather|1|imagem
+The Crown|2|imagem
+Zootopia|3|imagem
+League of Legends|Jogos|imagem
+Sweet Child o' Mine (Guns N' Roses)|4|imagem
+The Sims|Multi|imagem
+The Dark Knight|1|imagem
+Rick and Morty|2|imagem
+How to Train Your Dragon|3|imagem
+Super Mario Odyssey|Jogos|imagem
+Bohemian Rhapsody (Queen)|4|imagem
+Desgraça dos Infernos|2|imagem

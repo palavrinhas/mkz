@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Full Page Layout with Bootstrap 5</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+</head>
+<body>
+
+<header class="navbar navbar-expand-sm bg-dark navbar-dark">
+  <div class="container">
+    <a class="navbar-brand" href="#">My Website</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="#">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">About</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Contact</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</header>
+
+<section class="hero min-vh-100 d-flex justify-content-center align-items-center bg-cover" style="background-image: url('https://placeimg.com/1600/900/nature')">
+  <div class="container text-center text-white">
+    <h1 class="display-4 mb-4">Welcome to My Website</h1>
+    <p class="lead">This is a website with a lot of details.</p>
+    <a href="#" class="btn btn-primary btn-lg">Call to Action</a>
+  </div>
+</section>
+
+<section class="about bg-light py-5">
+  <div class="container">
+    <h2 class="display-4 text-center mb-4">About Us</h2>
+    <p class="lead text-center">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas metus magna, dictum quis augue id, rutrum ullamcorper quam. Donec vitae sapien eu libero venenatis venenatis eget eget neque. Pellentesque elementum libero velit, a accumsan risus rutrum quis. Donec rutrum congue leo eget malesuada. Nulla facilisi eros in maximus euismod. Suspendisse potenti. Sed faucibus orci lorem, in faucibus orci lorem.</p>
+    <div class="row row-cols-1 row-cols-md-2 g-4 mt-4">
+      <div class="col">
+        <div class="card h-100">
+          <i class="card-img-top fas fa-lightbulb fa-4x text-primary mb-2"></i>
+          <div class="card-body">
+            <h5 class="card-title">Feature 1</h5>
+            <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col">
+        <div class="card h-100">
+          <i class="card-img-top fas fa-rocket fa-4x text-success mb-2"></i>
+          <div class="card-body">
+            <h5 class="card-title">Feature 2</h5>
+            <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
