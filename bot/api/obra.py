@@ -71,6 +71,7 @@ class Obra:
 
     def sortear_obras(categoria):
         r = httpx.get(f"http://localhost:3000/sortear/obras/{categoria}").json()
+        print(r)
         if "erro" in r:
             retorno = r["mensagem"]
             print(retorno)
@@ -85,8 +86,6 @@ class Obra:
             obra_callbacks_divided = [obra_callbacks[i:i+3] for i in range(0, len(obra_callbacks), 3)]
 
         return formatted_text, obra_callbacks_divided
-
-    # parte das cartas das obras
 
     def sortear_carta_obra(obra_id):
         r = httpx.get(f"http://localhost:3000/sortear/carta/{obra_id}").json()

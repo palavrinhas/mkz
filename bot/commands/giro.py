@@ -19,16 +19,16 @@ async def girar_handler(update: Updater, context: ContextTypes.DEFAULT_TYPE):
         """
             botao = [
     [
-        InlineKeyboardButton("🍞 Panetunes", callback_data="Música"),
-        InlineKeyboardButton("🥣 Sereais", callback_data="Série")
+        InlineKeyboardButton("🍞 Panetunes", callback_data="Sortear_Música"),
+        InlineKeyboardButton("🥣 Sereais", callback_data="Sortear_Série")
     ],
     [
-        InlineKeyboardButton("🥖 Animapão", callback_data="Animação"),
-        InlineKeyboardButton("🍔 Burgames", callback_data="Jogo")
+        InlineKeyboardButton("🥖 Animapão", callback_data="Sortear_Animação"),
+        InlineKeyboardButton("🍔 Burgames", callback_data="Sortear_Jogo")
     ],
     [
-        InlineKeyboardButton("🧁 Muffilmes", callback_data="Filme"),
-        InlineKeyboardButton("🥪 Misto", callback_data="Multi")
+        InlineKeyboardButton("🧁 Muffilmes", callback_data="Sortear_Filme"),
+        InlineKeyboardButton("🥪 Misto", callback_data="Sortear_Multi")
     ],
     ]
             teclado = InlineKeyboardMarkup(botao)

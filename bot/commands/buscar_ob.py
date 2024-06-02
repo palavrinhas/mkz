@@ -90,7 +90,7 @@ async def buscar_obra(update: Updater, context: ContextTypes.DEFAULT_TYPE):
                     await update.message.reply_photo(foto, caption=legenda, reply_markup=teclado,parse_mode="HTML")
             else:
                 botoes = [InlineKeyboardButton("⬅️", callback_data=f"anterior_search_obras_{pagina_atual - 1}_{texto.split('rc ')[1]}"), InlineKeyboardButton("➡️", callback_data=f"proxima_search_obras_{pagina_atual + 1}_{texto.split('rc ')[1]}")]
-                formatado += f.format_obras(json.dumps(retorno['obras']))
+                formatado += f.formatar_obras_categoria(retorno['obras'])
                 texto_final = f"🔎 {pagina_atual}|{paginas}\n{formatado}"
                 teclado = InlineKeyboardMarkup([botoes])
                 await update.message.reply_text(texto_final, reply_markup=teclado, parse_mode="HTML")
