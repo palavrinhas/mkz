@@ -382,7 +382,7 @@ class ButtonHandler:
         obra = Obra.buscar_obra(carta[0]['obra'])
         ide = str(carta[0]["ID"])
         quantasTem = Carta.buscar_carta(ide, int(query.from_user.id))['quantidade_acumulada']
-        txt = f"""<i>Pagamento realizado com sucesso! Faça bom proveito do seu pedido.</i>\n\n<code>{carta[0]["ID"]}</code>. <strong>{carta[0]["nome"]}</strong> - {obra["nome"]}\n\n(<code>{quantasTem}x</code>)"""
+        txt = f"""<i>Pagamento realizado com sucesso!\nFaça bom proveito do seu pedido.</i>\n\n<code>{carta[0]["ID"]}</code>. <strong>{carta[0]["nome"]}</strong> - {obra["nome"]}\n\n(<code>{quantasTem}x</code>)"""
         await query.edit_message_media(media=InputMediaPhoto(media=carta[0]["imagem"], caption=txt, parse_mode="HTML"))
 
     @apply_anti_spam
