@@ -72,7 +72,7 @@ func RemoverItemWishlist(c *fiber.Ctx) error {
 
 func ContaNova(c *fiber.Ctx) error {
 	userID := c.Params("user_id")
-	colecaoNome := fmt.Sprintf("Minha coleção - %s", userID)
+	colecaoNome := fmt.Sprintf("Minha coleção completa [%s]!", userID)
 
 	usuario := models.Usuario{
 		UserID:       userID,
@@ -82,7 +82,9 @@ func ContaNova(c *fiber.Ctx) error {
 		DesejaTrocar: false,
 		Premium:      false,
 		Admin:        false,
-		CartaFav:     "0",
+		CartaFav:     0,
+		Moedas:       0,
+		Notificar:    true,
 	}
 
 	if err := db.DB.Create(&usuario).Error; err != nil {

@@ -31,15 +31,17 @@ def emoji_categoria_obras(categoria):
     return emoji
 
 def get_emoji(acumulado):
-    if acumulado == 1:
+    if int(acumulado) == 1 or 0:
         return ""
-    elif 2 <= acumulado < 10:
-        return "🕐"
-    elif 10 <= acumulado < 25:
-        return "🕒"
-    elif 25 <= acumulado < 50:
-        return "🎂"
-    elif 50 <= acumulado < 100:
-        return "🍰"
-    else:  # acumulado >= 100
-        return "🍽️"
+    elif 2 <= int(acumulado) < 10:
+        return "😿"
+    elif 10 <= int(acumulado) < 25:
+        return "😾"
+    elif 25 <= int(acumulado) < 50:
+        return "😼"
+    elif 50 <= int(acumulado) < 100:
+        return "😸"
+    elif int(acumulado) >= 100:
+        return "😻"
+    else:
+        return ""

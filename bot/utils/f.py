@@ -1,5 +1,5 @@
 import json
-from utils.categoria import emoji
+from utils.categoria import emoji, get_emoji
 
 def format_json(json_string):
     f = ""
@@ -31,11 +31,13 @@ def formatar_ids(data):
     max_length_id = max(len(str(item['id'])) for item in data)
 
     formatted_data = ""
+    print(data)
     for item in data:
         id_str = str(item['id'])
         emj = emoji(item['categoria'])
+        emoji_cat = get_emoji(item['acumulado'])
         padding_spaces = ' ' * (max_length_id - len(id_str))
-        formatted_data += f"\n{emj}     <code>{padding_spaces}</code><code>{id_str}</code>. <strong>{item['nome']}</strong> — <i>{item['obra_nome']}</i>"
+        formatted_data += f"\n{emj}     <code>{padding_spaces}</code><code>{id_str}</code>. <strong>{item['nome']}</strong> {emoji_cat} — <i>{item['obra_nome']}</i>"
     return formatted_data
 
 def formatar_obras_cartas(data):

@@ -1,14 +1,15 @@
 import logging
 from telegram import Update
 from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler, PrefixHandler
-from telegram.ext import Application, CallbackQueryHandler, CommandHandler, ContextTypes, MessageHandler, filters
-from commands import trocar_cmd, conta, start_cmd, giro, ci, buscar_c, buscar_ob, adicionar_carta, adicionar_obra, varias_c, bkp, set_adm, editar_c, editar_ob, set_fav, obras_categoria
+from telegram.ext import Application, CallbackQueryHandler, CommandHandler, ContextTypes, MessageHandler, filters, ConversationHandler, CallbackContext
+from commands import trocar_cmd, conta, start_cmd, giro, ci, buscar_c, buscar_ob, adicionar_carta, adicionar_obra, varias_c, bkp, set_adm, editar_c, editar_ob, set_fav, obras_categoria, set_gif
 from utils.antispam import ButtonHandler
 
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     level=logging.INFO
 )
+
 
 if __name__ == '__main__':
     prefixos = ["!","/","."]
@@ -24,6 +25,15 @@ if __name__ == '__main__':
     troca_handler = PrefixHandler(prefixos, 'troca', trocar_cmd.troca)
     colecao_handler = PrefixHandler(prefixos, 'ci', ci.colecao)
     set_fav_handler = PrefixHandler(prefixos, 'fav', set_fav.setar)
+
+    STATE_WAITING = 1
+    set_gif_handler = ConversationHandler(
+        entry_points=[PrefixHandler(prefixos, 'sgif', set_gif.setar)],
+        states={
+            STATE_WAITING: [MessageHandler(filters.Document, set_gif.processar_gif)]
+        },
+        fallbacks=[]
+    )
 
     # handlers de busca de obras e cartas por nome e IDs
     procurar_obra = PrefixHandler(prefixos, 'rc', buscar_ob.buscar_obra)
@@ -44,6 +54,7 @@ if __name__ == '__main__':
     bkp = PrefixHandler(prefixos, 'bkp', bkp.backup_db)
 
     # nhe, aqui é só para cadastrar os handlers, eu deixo embaralhado pq é meio foda-se mesmo
+    application.add_handler(set_gif_handler)
     application.add_handler(troca_handler)
     application.add_handler(obras_categoria_handler)
     application.add_handler(varias_carta)

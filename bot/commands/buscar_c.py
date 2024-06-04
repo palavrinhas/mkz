@@ -1,7 +1,7 @@
 from api.carta import Carta
 from telegram.ext import Updater, ContextTypes
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
-from utils import f
+from utils import f, categoria
 import json
 
 async def buscar_carta(update: Updater, context: ContextTypes.DEFAULT_TYPE):
@@ -18,9 +18,11 @@ async def buscar_carta(update: Updater, context: ContextTypes.DEFAULT_TYPE):
             foto = retorno['carta']['imagem']
             nome = retorno['carta']['nome']
             acumulado = retorno['quantidade_acumulada']
+            print(acumulado)
             obra = retorno['carta']['obra_nome']
             cr = retorno['carta']['credito']
-            caption_final = f"💳 | <a href='{cr}'>Cr</a>\n\n<code>{retorno['carta']['ID']}</code>. <strong>{nome}</strong> — <i>{obra}</i>\n\n(<code>x{acumulado}</code>)"
+            emoji_cativeiro = categoria.get_emoji(acumulado)
+            caption_final = f"💳 | <a href='{cr}'>Cr</a>\n\n<code>{retorno['carta']['ID']}</code>. <strong>{nome}</strong> — <i>{obra}</i>\n\n{emoji_cativeiro} (<code>x{acumulado}</code>)"
             await update.message.reply_photo(foto, caption=caption_final, parse_mode="HTML")
 
     elif len(txt) >= 2 and isinstance(texto.split("ing ")[1], str):

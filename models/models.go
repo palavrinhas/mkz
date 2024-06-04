@@ -1,5 +1,9 @@
 package models
 
+// Estas structs são referentes às tabelas criadas no banco de dados.
+// Todas elas tem suas colunas e tipo de retorno json.
+// Se você não conseguir ler, só lamentos, skill issue.
+
 type CartaSub struct {
 	CartaSubID int    `gorm:"primaryKey"`
 	Nome       string `json:"nome"`
@@ -16,14 +20,16 @@ type Subobra struct {
 }
 
 type Usuario struct {
-	UserID       string `json:"user"`
+	UserID       string `json:"user_id"`
 	Giros        int    `json:"giros"`
-	CartaFav     string `json:"carta_fav"`
+	CartaFav     int    `json:"carta_fav"`
 	Banido       bool   `json:"banido"`
-	ColecaoNome  string `json:"colecaoNome"`
+	Privado      bool   `json:"privado"`
 	DesejaTrocar bool   `json:"trocar"`
 	Premium      bool   `json:"premium"`
 	Admin        bool   `json:"admin"`
+	Moedas       int    `json:"moedas"`
+	Notificar    bool   `json:"notificar"`
 }
 
 type Obra struct {
@@ -43,9 +49,16 @@ type Carta struct {
 }
 
 type ColecaoItem struct {
-	UserID    string `json:"user_id"`
-	ItemID    uint   `json:"item_id"`
-	Acumulado uint
+	UserID      string `json:"user_id"`
+	ItemID      uint   `json:"item_id"`
+	Acumulado   uint   // não vou colocar nada aqui porque retornará junto de outras coisas
+	PersonalGif bool   `json:"permitido"`
+}
+
+type Gif struct {
+	UserID  string `json:"user_id"`
+	CartaID int    `json:"carta_id"`
+	GifLink string `json:"link"`
 }
 
 type Wishlist struct {
