@@ -20,7 +20,7 @@ if __name__ == '__main__':
     button_handler = ButtonHandler(application)
 
     start_handler = CommandHandler('start', start_cmd.start)
-    girar_handler = PrefixHandler(prefixos, 'assar', giro.girar_handler)
+    girar_handler = PrefixHandler(prefixos, 'pedido', giro.girar_handler)
     conta_handler = PrefixHandler(prefixos, 'conta', conta.conta_usuario)
     troca_handler = PrefixHandler(prefixos, 'troca', trocar_cmd.troca)
     colecao_handler = PrefixHandler(prefixos, 'ci', ci.colecao)
@@ -30,7 +30,7 @@ if __name__ == '__main__':
     set_gif_handler = ConversationHandler(
         entry_points=[PrefixHandler(prefixos, 'sgif', set_gif.setar)],
         states={
-            STATE_WAITING: [MessageHandler(filters.Document, set_gif.processar_gif)]
+            STATE_WAITING: [MessageHandler(filters.Entity("url"), set_gif.processar_gif)]
         },
         fallbacks=[]
     )

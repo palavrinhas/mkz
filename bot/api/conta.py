@@ -64,6 +64,7 @@ class Conta:
         data = {'user':user_id, 'carta_fav':carta_id}
         h = {'Content-Type':'application/json'}
         retorno = httpx.post("http://localhost:3000/set-fav/", headers=h, json=data).json()
+        print(retorno)
         if "Carta não encontrada" in retorno['message']:
             return "<strong>Erro: Carta não encontrada na sua coleção!</strong>"
         elif "Carta favorita atualizada com sucesso" in retorno['message']:

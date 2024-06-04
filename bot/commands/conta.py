@@ -9,11 +9,12 @@ def info_conta(user_id: str, nome: str) -> (str, Union[str, None]):
     membro = "Burguês" if conta['premium'] else "Freguês"
     total_cartas = len(Conta.buscar_colecao_bruta(user_id))
 
-    if conta['carta_fav'] == "0":
+    if conta['carta_fav'] == 0:
         ingrediente_fav = ""
         link = None
     else:
         ifs = Carta.buscar_carta(conta['carta_fav'], user_id)
+        print(ifs)
         ingrediente_fav = f"\n⭐️ Ingrediente favorito:\n<code>{conta['carta_fav']}</code>. <strong>{ifs['carta']['nome']}</strong> {categoria.get_emoji(ifs['quantidade_acumulada'])}\n"
         link = ifs['carta']['imagem']
 

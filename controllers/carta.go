@@ -53,7 +53,7 @@ func BuscarCartaPorID(c *fiber.Ctx) error {
 	// Busca a carta pelo ID
 	if err := db.DB.First(&carta, cartaID).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
-			return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"erro": "Nenhuma carta foi encontrada com esse ID."})
+			return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"message": "Nenhuma carta foi encontrada com esse ID."})
 		}
 		return err
 	}
@@ -61,7 +61,7 @@ func BuscarCartaPorID(c *fiber.Ctx) error {
 	// Busca a obra associada à carta
 	if err := db.DB.First(&obra, carta.Obra).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
-			return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"erro": "Nenhuma obra foi encontrada com esse ID."})
+			return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"message": "Nenhuma obra foi encontrada com esse ID."})
 		}
 		return err
 	}
@@ -82,6 +82,7 @@ func BuscarCartaPorID(c *fiber.Ctx) error {
 					"categoria": obra.Categoria,
 				},
 				"quantidade_acumulada": 0,
+				"message":              "OK",
 			})
 		}
 		return err
@@ -99,6 +100,7 @@ func BuscarCartaPorID(c *fiber.Ctx) error {
 			"categoria": obra.Categoria,
 		},
 		"quantidade_acumulada": colecaoItem.Acumulado,
+		"message":              "OK",
 	})
 }
 

@@ -33,7 +33,7 @@ async def girar_handler(update: Updater, context: ContextTypes.DEFAULT_TYPE):
     ]
             teclado = InlineKeyboardMarkup(botao)
 
-            padaria_img = "rodar.jpg"
+            padaria_img = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTnAiRyyc1UQYymfD7qAc-NRVtQz5StusUi0w&s"
             await update.message.reply_photo(padaria_img, caption=texto_girar, reply_markup=teclado, parse_mode="html")
         else:
             await update.message.reply_text(
