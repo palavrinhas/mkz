@@ -191,6 +191,7 @@ func PegarColecao(c *fiber.Ctx) error {
 	if offset > len(cartasOrdenadas) {
 		offset = len(cartasOrdenadas)
 	}
+
 	limit := itemsPerPage
 	if offset+limit > len(cartasOrdenadas) {
 		limit = len(cartasOrdenadas) - offset

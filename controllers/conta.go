@@ -3,7 +3,6 @@ package internal
 import (
 	"api/db"
 	"api/models"
-	"fmt"
 	"strconv"
 
 	"github.com/gofiber/fiber/v2"
@@ -72,14 +71,13 @@ func RemoverItemWishlist(c *fiber.Ctx) error {
 
 func ContaNova(c *fiber.Ctx) error {
 	userID := c.Params("user_id")
-	colecaoNome := fmt.Sprintf("Minha coleção completa [%s]!", userID)
 
 	usuario := models.Usuario{
 		UserID:       userID,
 		Giros:        8,
 		Banido:       false,
-		ColecaoNome:  colecaoNome,
 		DesejaTrocar: false,
+		Privado:      false,
 		Premium:      false,
 		Admin:        false,
 		CartaFav:     0,
