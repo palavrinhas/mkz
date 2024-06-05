@@ -59,17 +59,13 @@ func main() {
 	app.Get("/cadastrar/usuario/:user_id", internal.ContaNova)
 	app.Get("/colecao/filtrada/:userID/:obraID", internal.PegarColecaoFiltradaPorID)
 	app.Post("/set-fav/", internal.SetarCartaFavorita)
-
-	// Rotas de giro (remover/adicionar)
 	app.Get("/giros/remover/:userID", internal.RemoverGiro)
 	app.Post("/inserir/giros/:user", internal.InserirGiros)
-
-	// Rotas wishlist
 	app.Get("/wishlist/:userID", internal.GetWishlist)
 	app.Post("/wishlist/adicionar", internal.AdicionarItemWishlist)
 	app.Get("/wishlist/remover/:userID/:cartaID", internal.RemoverItemWishlist)
 	app.Get("/carta/obra/:obra_id", internal.CartasPorObra)
-
+	app.Post("/pedido/", internal.Pedido)
 	// não terminado
 	app.Get("/banir/:userID", internal.Banir)
 

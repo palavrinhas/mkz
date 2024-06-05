@@ -37,4 +37,6 @@ class Carta:
         r = httpx.get(f"http://localhost:3000/carta/obra/{obra_id}?page={pagina}").json()
         return r
 
-Carta.buscar_carta_nome("jungkook")
+    def criar_pedido_gif(userid, link, carta_id):
+        r = httpx.get(f"http://localhost:3000/pedido/")
+        return True

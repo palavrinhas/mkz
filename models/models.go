@@ -55,10 +55,18 @@ type ColecaoItem struct {
 	PersonalGif bool   `json:"permitido"`
 }
 
-type Gif struct {
+type Gifs struct {
 	UserID  string `json:"user_id"`
 	CartaID int    `json:"carta_id"`
 	GifLink string `json:"link"`
+}
+
+type Pedidos struct {
+	UserID  string `json:"user_id"`
+	CartaID int    `json:"carta_id"`
+	GifLink string `json:"gif_link"`
+	Status  string `json:"status"`
+	Aceito  bool   `json:"aceito"`
 }
 
 type Wishlist struct {

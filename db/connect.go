@@ -27,5 +27,7 @@ func Connect() {
 		&models.Carta{},
 		&models.Subobra{},
 		&models.CartaSub{},
+		&models.Gifs{},
+		&models.Pedidos{},
 	)
 }

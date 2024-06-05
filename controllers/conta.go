@@ -8,21 +8,10 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-/*
- - Verifica se a conta existe;
- - Criar uma nova conta;
- - Bane uma conta;
- - Insere giros em uma conta específica;
- - Insere uma carta em uma conta específica;
- - Remove uma carta de uma conta específica;
- - Seta a carta favorita do usuário (caso ele tenha);
- - Resgata a coleção do usuário;
- - Resgata um gift especial e, dependendo do conteúdo do gift, é inserido o prêmio!
- - Pega a informação da conta;
- - Nomeia a coleção do indivíduo;
-*/
+func Pedido(c *fiber.Ctx) error {
+	return c.JSON("ok")
+}
 
-// tô trabalhando nisso tb kk
 func Banir(c *fiber.Ctx) error {
 	return c.JSON(fiber.Map{
 		"mensagem": "usuário banido com sucesso. Ele não tem mais acesso ao bot.",

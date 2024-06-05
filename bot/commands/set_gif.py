@@ -4,11 +4,11 @@ from telegram.ext import Updater, ContextTypes, CallbackContext, ConversationHan
 import json
 from utils.file_size import tamanho_arquivo_aceitavel
 
-with open('config.json', 'r') as arquivo:
-    dados_json = json.load(arquivo)
-
 STATE_WAITING = 1
 job = ""
+
+with open('config.json', 'r') as arquivo:
+    dados_json = json.load(arquivo)
 
 async def cancelar_gif(context: CallbackContext):
     chat = context.job
