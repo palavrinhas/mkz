@@ -2,6 +2,7 @@ from api.conta import Conta
 from api.carta import Carta
 from telegram.ext import Updater, ContextTypes, CallbackContext, ConversationHandler
 import json
+from utils.file_size import tamanho_arquivo_aceitavel
 
 with open('config.json', 'r') as arquivo:
     dados_json = json.load(arquivo)
@@ -33,6 +34,9 @@ async def setar(update: Updater, context: ContextTypes.DEFAULT_TYPE):
 
 async def processar_gif(context: CallbackContext, sus=1):
     job.schedule_removal()
-    await context._bot.send_message(chat_id=dados_json['dev'], text="ok")
-    await context.message.reply_text(text="Gif recebido com sucesso! Aguarde o retorno.")
+    if tamanho_arquivo_aceitavel(context.message.text):
+        await context._bot.send_message(chat_id=dados_json['aprovar_gif'], text="ok")
+        await context.message.reply_text(text="Gif recebido com sucesso! Aguarde o retorno.")
+    else:
+         await context.message.reply_text(text="Erro: verifique se o gif atende as regras. Ação cancelada.")
     return ConversationHandler.END
