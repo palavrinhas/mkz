@@ -65,7 +65,8 @@ func main() {
 	app.Post("/wishlist/adicionar", internal.AdicionarItemWishlist)
 	app.Get("/wishlist/remover/:userID/:cartaID", internal.RemoverItemWishlist)
 	app.Get("/carta/obra/:obra_id", internal.CartasPorObra)
-	app.Post("/pedido/", internal.Pedido)
+	app.Post("/criar-pedido/:user_id/:msgid/:carta_id", internal.CriarPedido)
+	app.Get("/aceitar-pedido/:pedido_id/", internal.AceitarPedido)
 	// não terminado
 	app.Get("/banir/:userID", internal.Banir)
 

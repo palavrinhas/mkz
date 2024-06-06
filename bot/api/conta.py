@@ -69,3 +69,12 @@ class Conta:
             return "<strong>Erro: Carta não encontrada na sua coleção!</strong>"
         elif "Carta favorita atualizada com sucesso" in retorno['message']:
             return "<strong>Carta favorita setada com sucesso!</strong>"
+
+    def criar_pedido_gif(user_id, msgid, carta_id, link):
+        he = {"Content-Type":"application/json"}
+        js = {"link":link}
+        r = httpx.post(f"http://localhost:3000/criar-pedido/{user_id}/{msgid}/{carta_id}", headers=he, json=js).json()
+        return True
+    
+    def aceitar_pedido_gif(user_id, pedido_id):
+        return True

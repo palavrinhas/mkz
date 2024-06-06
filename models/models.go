@@ -62,11 +62,11 @@ type Gifs struct {
 }
 
 type Pedidos struct {
-	UserID  string `json:"user_id"`
-	CartaID int    `json:"carta_id"`
-	GifLink string `json:"gif_link"`
-	Status  string `json:"status"`
-	Aceito  bool   `json:"aceito"`
+	PedidoID   int    `json:"id_pedido"`
+	UserID     string `json:"user_id"`
+	CartaID    int    `json:"carta_id"`
+	GifLink    string `json:"gif_link"`
+	MensagemID string `json:"mensagem_id"`
 }
 
 type Wishlist struct {

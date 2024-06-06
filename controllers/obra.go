@@ -124,7 +124,7 @@ func BuscarObraPorNome(c *fiber.Ctx) error {
 	var obras []models.Obra
 	var count int64
 
-	if err := db.DB.Where("nome LIKE ?", "%"+req.Termos+"%").Order("nome ASC").Offset(offset).Limit(pageSize).Find(&obras).Error; err != nil {
+	if err := db.DB.Where("nome ILIKE ?", "%"+req.Termos+"%").Order("nome ASC").Offset(offset).Limit(pageSize).Find(&obras).Error; err != nil {
 		return err
 	}
 

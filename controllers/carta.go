@@ -18,31 +18,6 @@ import (
  - Editar a carta (nome, obra, creditos);
 */
 
-// func BuscarCartaPorID(c *fiber.Ctx) error {
-// 	cartaID := c.Params("carta_id")
-// 	userID := c.Query("user_id")
-// 	var carta models.Carta
-// 	var colecaoItem models.ColecaoItem
-
-// 	if err := db.DB.Find(&carta, cartaID).Error; err != nil {
-// 		if err == gorm.ErrRecordNotFound {
-// 			return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"erro": "Nenhuma carta foi encontrada com esse ID."})
-// 		}
-// 		return err
-// 	}
-
-// 	err := db.DB.Where("user_id = ? AND item_id = ?", userID, cartaID).First(&colecaoItem).Error
-// 	if err != nil {
-// 		if err == gorm.ErrRecordNotFound {
-// 			// Se o usuário não tiver essa carta na coleção, retorna a carta com quantidade acumulada zero
-// 			return c.JSON(fiber.Map{"carta": carta, "quantidade_acumulada": 0})
-// 		}
-// 		return err
-// 	}
-
-// 	return c.JSON(fiber.Map{"carta": carta, "quantidade_acumulada": colecaoItem.Acumulado})
-// }
-
 func BuscarCartaPorID(c *fiber.Ctx) error {
 	cartaID := c.Params("carta_id")
 	userID := c.Query("user_id")
@@ -104,43 +79,6 @@ func BuscarCartaPorID(c *fiber.Ctx) error {
 	})
 }
 
-// func BuscarCartaPorID(c *fiber.Ctx) error {
-// 	cartaID := c.Params("carta_id")
-// 	var carta models.Carta
-
-// 	if err := db.DB.Find(&carta, cartaID).Error; err != nil {
-// 		return err
-// 	}
-
-// 	if carta.ID == 0 {
-// 		return c.JSON(fiber.Map{"erro": "nenhuma carta foi encontrada com esse ID."})
-// 	}
-
-// 	return c.JSON(carta)
-// }
-
-// func BuscarCartaPorNome(c *fiber.Ctx) error {
-// 	var req struct {
-// 		Termos string `json:"termos"`
-// 	}
-
-// 	if err := c.BodyParser(&req); err != nil {
-// 		return err
-// 	}
-
-// 	var cartas []models.Carta
-
-// 	if err := db.DB.Where("nome LIKE ?", "%"+req.Termos+"%").Find(&cartas).Error; err != nil {
-// 		return err
-// 	}
-
-// 	if len(cartas) == 0 {
-// 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"erro": "nenhuma obra foi encontrada com esse nome."})
-// 	}
-
-// 	return c.JSON(cartas)
-// }
-
 func BuscarCartaPorNome(c *fiber.Ctx) error {
 	var req struct {
 		Termos string `json:"termos"`
@@ -163,7 +101,7 @@ func BuscarCartaPorNome(c *fiber.Ctx) error {
 	var totalCartas int64
 
 	// Consulta para contar o total de cartas que correspondem aos termos de busca
-	if err := db.DB.Model(&models.Carta{}).Where("nome LIKE ?", "%"+req.Termos+"%").Count(&totalCartas).Error; err != nil {
+	if err := db.DB.Model(&models.Carta{}).Where("nome ILIKE ?", "%"+req.Termos+"%").Count(&totalCartas).Error; err != nil {
 		return err
 	}
 
@@ -171,7 +109,7 @@ func BuscarCartaPorNome(c *fiber.Ctx) error {
 	offset := (pagina - 1) * resultadosPorPagina
 
 	// Consulta para recuperar as cartas da página atual
-	if err := db.DB.Where("nome LIKE ?", "%"+req.Termos+"%").Order("nome ASC").Offset(offset).Limit(resultadosPorPagina).Find(&cartas).Error; err != nil {
+	if err := db.DB.Where("nome ILIKE ?", "%"+req.Termos+"%").Order("nome ASC").Offset(offset).Limit(resultadosPorPagina).Find(&cartas).Error; err != nil {
 		return err
 	}
 

@@ -3,13 +3,68 @@ package internal
 import (
 	"api/db"
 	"api/models"
+	"fmt"
+	"math/rand"
 	"strconv"
+	"time"
 
 	"github.com/gofiber/fiber/v2"
 )
 
-func Pedido(c *fiber.Ctx) error {
-	return c.JSON("ok")
+func CriarPedido(c *fiber.Ctx) error {
+	rand.Seed(time.Now().UnixNano())
+	idPedido := rand.Intn(10000) + 1
+
+	userID := c.Params("user_id")
+	cartaID := c.Params("carta_id")
+	carta_id, err := strconv.Atoi(cartaID)
+
+	var dados struct {
+		LinkGif string `json:"link"`
+	}
+
+	if err := c.BodyParser(&dados); err != nil {
+		return err
+	}
+
+	if err != nil {
+		fmt.Println(err)
+		return c.JSON(fiber.Map{
+			"erro": "não foi possivel converter a carta string em int.",
+		})
+	}
+
+	msgID := c.Params("msgid")
+
+	pedido := models.Pedidos{
+		UserID:     userID,
+		CartaID:    carta_id,
+		GifLink:    dados.LinkGif,
+		MensagemID: msgID,
+		PedidoID:   idPedido,
+	}
+
+	if err := db.DB.Create(&pedido).Error; err != nil {
+		return err
+	}
+
+	return c.JSON(fiber.Map{
+		"mensagem": pedido,
+	})
+}
+
+func AceitarPedido(c *fiber.Ctx) error {
+	pedidoID := c.Params("pedido_id")
+
+	pedido := models.Pedidos{}
+
+	if err := db.DB.Find(&pedido, pedidoID).Error; err != nil {
+		return err
+	}
+
+	return c.JSON(fiber.Map{
+		"mensagem": pedido,
+	})
 }
 
 func Banir(c *fiber.Ctx) error {
