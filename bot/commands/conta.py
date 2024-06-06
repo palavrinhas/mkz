@@ -35,5 +35,7 @@ async def conta_usuario(update: Updater, context: ContextTypes.DEFAULT_TYPE):
     texto, link  = info_conta(user_id, n)
     if link is None:
         await update.message.reply_text(reply_to_message_id=update.message.message_id, text=texto, parse_mode="HTML")
+    elif link.endswith(".gif") or link.endswith(".mp4"):
+        await update.message.reply_animation(link, reply_to_message_id=update.message.message_id, caption=texto, parse_mode="HTML")
     else:
         await update.message.reply_photo(photo=link, reply_to_message_id=update.message.message_id, caption=texto, parse_mode="HTML")

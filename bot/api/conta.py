@@ -64,9 +64,8 @@ class Conta:
         data = {'user':user_id, 'carta_fav':carta_id}
         h = {'Content-Type':'application/json'}
         retorno = httpx.post("http://localhost:3000/set-fav/", headers=h, json=data).json()
-        print(retorno)
         if "Carta não encontrada" in retorno['message']:
-            return "<strong>Erro: Carta não encontrada na sua coleção!</strong>"
+            return "<strong>Carta não encontrada na sua coleção!</strong>"
         elif "Carta favorita atualizada com sucesso" in retorno['message']:
             return "<strong>Carta favorita setada com sucesso!</strong>"
 
@@ -74,10 +73,8 @@ class Conta:
         he = {"Content-Type":"application/json"}
         js = {"link":link}
         r = httpx.post(f"http://localhost:3000/criar-pedido/{user_id}/{msgid}/{carta_id}", headers=he, json=js).json()
-        return True
+        return r
 
     def aceitar_pedido_gif(pedido_id):
         r = httpx.get(f"http://localhost:3000/aceitar-pedido/{pedido_id}").json()
         return r
-
-Conta.criar_pedido_gif('2057492020', '101010', 3, 'https://64.media.tumblr.com/94cdf67313c4a87e738763013a4f5ba7/fffc639242cf0bbb-ad/s500x750/d64c3d33c4fc3637ccdf9eb5dd849d0db6a875f0.gif')

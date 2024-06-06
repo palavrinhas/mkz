@@ -22,8 +22,8 @@ async def buscar_carta(update: Updater, context: ContextTypes.DEFAULT_TYPE):
             cr = retorno['carta']['credito']
             emoji_cativeiro = categoria.get_emoji(acumulado)
             caption_final = f"💳 | <a href='{cr}'>Cr</a>\n\n<code>{retorno['carta']['ID']}</code>. <strong>{nome}</strong> — <i>{obra}</i>\n\n{emoji_cativeiro} (<code>x{acumulado}</code>)"
-            if foto.endswith(".gif"):
-                await update.message.reply_document(foto, caption=caption_final, parse_mode="HTML")
+            if foto.endswith(".gif") or foto.endswith(".mp4"):
+                await update.message.reply_animation(foto, caption=caption_final, parse_mode="HTML")
             else:
                 await update.message.reply_photo(foto, caption=caption_final, parse_mode="HTML")
 
@@ -34,7 +34,4 @@ async def buscar_carta(update: Updater, context: ContextTypes.DEFAULT_TYPE):
         else:
             caption = "<strong>🔎 Sua pesquisa:</strong>\n"
             caption += f.format_json(json.dumps(retorno['cartas']))
-            #botoes = [InlineKeyboardButton("⬅️", callback_data="search_carta_anterior"), InlineKeyboardButton("➡️", callback_data="search_carta_proxima")]
-            #teclado = InlineKeyboardMarkup([botoes])
             await update.message.reply_text(caption, parse_mode="HTML")
-
