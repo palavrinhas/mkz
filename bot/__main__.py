@@ -4,6 +4,7 @@ from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler, Prefi
 from telegram.ext import Application, CallbackQueryHandler, CommandHandler, ContextTypes, MessageHandler, filters, ConversationHandler, CallbackContext
 from commands import trocar_cmd, conta, start_cmd, giro, ci, buscar_c, buscar_ob, adicionar_carta, adicionar_obra, varias_c, bkp, set_adm, editar_c, editar_ob, set_fav, obras_categoria, set_gif
 from utils.antispam import ButtonHandler
+from api.conta import Conta
 
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -13,7 +14,6 @@ logging.basicConfig(
 
 if __name__ == '__main__':
     prefixos = ["!","/","."]
-
     #application = ApplicationBuilder().token('6975062896:AAHT_GqFRIWifT3JGFZ9_UCXCtmIacwvlzs').build()
     application = ApplicationBuilder().token("7051533328:AAFiEX6Zc963hIKB768UEOkDZ5qmAzYReR8").build()
 

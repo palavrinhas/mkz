@@ -18,12 +18,14 @@ async def buscar_carta(update: Updater, context: ContextTypes.DEFAULT_TYPE):
             foto = retorno['carta']['imagem']
             nome = retorno['carta']['nome']
             acumulado = retorno['quantidade_acumulada']
-            print(acumulado)
             obra = retorno['carta']['obra_nome']
             cr = retorno['carta']['credito']
             emoji_cativeiro = categoria.get_emoji(acumulado)
             caption_final = f"💳 | <a href='{cr}'>Cr</a>\n\n<code>{retorno['carta']['ID']}</code>. <strong>{nome}</strong> — <i>{obra}</i>\n\n{emoji_cativeiro} (<code>x{acumulado}</code>)"
-            await update.message.reply_photo(foto, caption=caption_final, parse_mode="HTML")
+            if foto.endswith(".gif"):
+                await update.message.reply_document(foto, caption=caption_final, parse_mode="HTML")
+            else:
+                await update.message.reply_photo(foto, caption=caption_final, parse_mode="HTML")
 
     elif len(txt) >= 2 and isinstance(texto.split("ing ")[1], str):
         retorno = Carta.buscar_carta_nome(texto.split("ing ")[1])
@@ -35,3 +37,4 @@ async def buscar_carta(update: Updater, context: ContextTypes.DEFAULT_TYPE):
             #botoes = [InlineKeyboardButton("⬅️", callback_data="search_carta_anterior"), InlineKeyboardButton("➡️", callback_data="search_carta_proxima")]
             #teclado = InlineKeyboardMarkup([botoes])
             await update.message.reply_text(caption, parse_mode="HTML")
+

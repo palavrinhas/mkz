@@ -78,7 +78,7 @@ func AceitarPedido(c *fiber.Ctx) error {
 			return err
 		}
 	} else {
-		if err := db.DB.Model(&gif).Update("gif_link", pedido.GifLink).Error; err != nil {
+		if err := db.DB.Model(&gif).Where("user_id = ?", pedido.UserID).Update("gif_link", pedido.GifLink).Error; err != nil {
 			return err
 		}
 	}
