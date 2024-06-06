@@ -67,6 +67,7 @@ func main() {
 	app.Get("/carta/obra/:obra_id", internal.CartasPorObra)
 	app.Post("/criar-pedido/:user_id/:msgid/:carta_id", internal.CriarPedido)
 	app.Get("/aceitar-pedido/:pedido_id/", internal.AceitarPedido)
+	app.Get("/recusar-pedido/:pedido_id/", internal.RecusarPedido)
 	// não terminado
 	app.Get("/banir/:userID", internal.Banir)
 

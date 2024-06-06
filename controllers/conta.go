@@ -3,15 +3,52 @@ package internal
 import (
 	"api/db"
 	"api/models"
+	"bytes"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"math/rand"
+	"net/http"
 	"strconv"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"gorm.io/gorm"
 )
+
+const (
+	BotToken = "7051533328:AAFiEX6Zc963hIKB768UEOkDZ5qmAzYReR8"
+	ApiURL   = "https://api.telegram.org/bot" + BotToken + "/sendMessage"
+)
+
+type TelegramMessage struct {
+	ChatID string `json:"chat_id"`
+	Text   string `json:"text"`
+}
+
+func SendTelegramMessage(chatID string, message string) error {
+	msg := TelegramMessage{
+		ChatID: chatID,
+		Text:   message,
+	}
+
+	body, err := json.Marshal(msg)
+	if err != nil {
+		return fmt.Errorf("error marshaling message: %v", err)
+	}
+
+	resp, err := http.Post(ApiURL, "application/json", bytes.NewBuffer(body))
+	if err != nil {
+		return fmt.Errorf("error sending message: %v", err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return fmt.Errorf("non-OK HTTP status: %s", resp.Status)
+	}
+
+	return nil
+}
 
 func CriarPedido(c *fiber.Ctx) error {
 	rand.Seed(time.Now().UnixNano())
@@ -55,6 +92,21 @@ func CriarPedido(c *fiber.Ctx) error {
 	})
 }
 
+func RecusarPedido(c *fiber.Ctx) error {
+	pedidoID := c.Params("pedido_id")
+
+	var pedido models.Pedidos
+	if err := db.DB.Where("pedido_id = ?", pedidoID).Delete(&pedido).Error; err != nil {
+		return err
+	}
+
+	SendTelegramMessage(pedido.UserID, "Infelizmente, o pedido do seu gif foi recusado... Você quebrou alguma regra.")
+
+	return c.JSON(fiber.Map{
+		"mensagem": "Pedido recusado com sucesso.",
+	})
+}
+
 func AceitarPedido(c *fiber.Ctx) error {
 	pedidoID := c.Params("pedido_id")
 
@@ -74,6 +126,7 @@ func AceitarPedido(c *fiber.Ctx) error {
 			CartaID: pedido.CartaID,
 			GifLink: pedido.GifLink,
 		}
+
 		if err := db.DB.Create(&novoGif).Error; err != nil {
 			return err
 		}
@@ -90,6 +143,8 @@ func AceitarPedido(c *fiber.Ctx) error {
 	if err := db.DB.Model(&models.ColecaoItem{}).Where("user_id = ? AND item_id = ?", pedido.UserID, pedido.CartaID).Update("personal_gif", true).Error; err != nil {
 		return err
 	}
+
+	SendTelegramMessage(pedido.UserID, "Obaa! Seu último pedido de gif foi aceito. Verifique como está bonito agora!")
 
 	return c.JSON(fiber.Map{
 		"mensagem": "Pedido aceito com sucesso.",
