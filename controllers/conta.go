@@ -96,11 +96,15 @@ func RecusarPedido(c *fiber.Ctx) error {
 	pedidoID := c.Params("pedido_id")
 
 	var pedido models.Pedidos
-	if err := db.DB.Where("pedido_id = ?", pedidoID).Delete(&pedido).Error; err != nil {
+	if err := db.DB.Where("pedido_id = ?", pedidoID).Find(&pedido).Error; err != nil {
 		return err
 	}
 
 	SendTelegramMessage(pedido.UserID, "Infelizmente, o pedido do seu gif foi recusado... Você quebrou alguma regra.")
+
+	if err := db.DB.Where("pedido_id = ?", pedidoID).Delete(&pedido).Error; err != nil {
+		return err
+	}
 
 	return c.JSON(fiber.Map{
 		"mensagem": "Pedido recusado com sucesso.",

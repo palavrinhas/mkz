@@ -78,7 +78,7 @@ class Conta:
     def aceitar_pedido_gif(pedido_id):
         r = httpx.get(f"http://localhost:3000/aceitar-pedido/{pedido_id}").json()
         return r
-    
+
     def recusar_pedido_gif(pedido_id):
         r = httpx.get(f"http://localhost:3000/recusar-pedido/{pedido_id}").json()
         return r
