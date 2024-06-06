@@ -7,6 +7,7 @@ from typing import Union
 def info_conta(user_id: str, nome: str) -> (str, Union[str, None]):
     conta = Conta.buscar_usuario(user_id)
     membro = "Burguês" if conta['premium'] else "Freguês"
+    moedas = conta['moedas']
     total_cartas = len(Conta.buscar_colecao_bruta(user_id))
 
     if conta['carta_fav'] == 0:
@@ -14,7 +15,6 @@ def info_conta(user_id: str, nome: str) -> (str, Union[str, None]):
         link = None
     else:
         ifs = Carta.buscar_carta(conta['carta_fav'], user_id)
-        print(ifs)
         ingrediente_fav = f"\n⭐️ Ingrediente favorito:\n<code>{conta['carta_fav']}</code>. <strong>{ifs['carta']['nome']}</strong> {categoria.get_emoji(ifs['quantidade_acumulada'])}\n"
         link = ifs['carta']['imagem']
 
@@ -25,7 +25,7 @@ def info_conta(user_id: str, nome: str) -> (str, Union[str, None]):
 {ingrediente_fav}
 🛒 <strong>Cardápio:</strong> {total_cartas} <strong>pães</strong>
 🛎 <strong>Pedidos:</strong> {conta['giros']} <strong>(Máx)</strong>
-💵 <strong>Dinheiro:</strong> 0
+💵 <strong>Dinheiro:</strong> {moedas}
     """
     return texto, link
 
