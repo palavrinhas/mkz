@@ -37,17 +37,19 @@ async def setar(update: Updater, context: ContextTypes.DEFAULT_TYPE):
 async def processar_gif(context: CallbackContext, sus=1):
     job.schedule_removal()
     if tamanho_arquivo_aceitavel(context.message.text):
-        # try:
-        lnk = context.message.link_preview_options.url
-        user = context.message.from_user.id
-        pedido = Conta.criar_pedido_gif(user, context.message.message_id, card_selected['carta']['ID'], lnk)
-        txt = f"Pedido #{pedido['mensagem']['id_pedido']}\n\nUser: {pedido['mensagem']['user_id']}\nCarta ID: {pedido['mensagem']['carta_id']}\nGif Link: {pedido['mensagem']['gif_link']}"
-        botoes = [InlineKeyboardButton("✅", callback_data=f"aceitar_pedido_{pedido['mensagem']['id_pedido']}"), InlineKeyboardButton("❌", callback_data=f"recusar_pedido_{pedido['mensagem']['id_pedido']}")]
-        teclado = InlineKeyboardMarkup([botoes])
-        await context._bot.send_message(chat_id=dados_json['aprovar_gif'], text=txt, reply_markup=teclado)
-        await context.message.reply_text(text="Gif recebido com sucesso! Aguarde o retorno.")
-        # except:
-        #     await context.message.reply_text("Ocorreu um erro na tentativa de criar o pedido. Reporte para a administração ou @naftalino (De forma detalhada!).")
+        try:
+            lnk = context.message.link_preview_options.url
+            user = context.message.from_user.id
+            pedido = Conta.criar_pedido_gif(user, context.message.message_id, card_selected['carta']['ID'], lnk)
+            txt = f"Pedido #{pedido['mensagem']['id_pedido']}\n\nUser: {pedido['mensagem']['user_id']}\nCarta ID: {pedido['mensagem']['carta_id']}\nGif Link: {pedido['mensagem']['gif_link']}"
+            botoes = [InlineKeyboardButton("✅", callback_data=f"aceitar_pedido_{pedido['mensagem']['id_pedido']}"), InlineKeyboardButton("❌", callback_data=f"recusar_pedido_{pedido['mensagem']['id_pedido']}")]
+            teclado = InlineKeyboardMarkup([botoes])
+            await context._bot.send_message(chat_id=dados_json['aprovar_gif'], text=txt, reply_markup=teclado)
+            await context.message.reply_text(text="Gif recebido com sucesso! Aguarde o retorno.")
+            return ConversationHandler.END
+        except:
+            await context.message.reply_text("Ocorreu um erro na tentativa de criar o pedido. Reporte para a administração ou @naftalino (De forma detalhada!).")
+            return ConversationHandler.END
     else:
          await context.message.reply_text(text="Erro: verifique se o gif atende as regras. Ação cancelada.")
     return ConversationHandler.END
