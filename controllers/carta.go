@@ -86,7 +86,6 @@ func BuscarCartaPorID(c *fiber.Ctx) error {
 	var colecaoItem models.ColecaoItem
 	var obra models.Obra
 
-	// Busca a carta pelo ID
 	if err := db.DB.First(&carta, cartaID).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
 			return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"message": "Nenhuma carta foi encontrada com esse ID."})
@@ -94,7 +93,6 @@ func BuscarCartaPorID(c *fiber.Ctx) error {
 		return err
 	}
 
-	// Busca a obra associada à carta
 	if err := db.DB.First(&obra, carta.Obra).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
 			return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"message": "Nenhuma obra foi encontrada com esse ID."})
@@ -102,10 +100,8 @@ func BuscarCartaPorID(c *fiber.Ctx) error {
 		return err
 	}
 
-	// Verifica se o usuário possui essa carta na coleção
 	if err := db.DB.Where("user_id = ? AND item_id = ?", userID, cartaID).First(&colecaoItem).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
-			// Se o usuário não tiver essa carta na coleção, retorna a carta com quantidade acumulada zero
 			return c.JSON(fiber.Map{
 				"carta": map[string]interface{}{
 					"ID":        carta.ID,
@@ -123,10 +119,8 @@ func BuscarCartaPorID(c *fiber.Ctx) error {
 		return err
 	}
 
-	// Define a imagem ou o gif baseado no campo PersonalGif na tabela ColecaoItem
 	var imagemOuGif string
-	if colecaoItem.PersonalGif {
-		// Se PersonalGif for verdadeiro, busca o GIF da tabela Gifs
+	if colecaoItem.Acumulado == 40 {
 		var gif models.Gifs
 		if err := db.DB.Where("user_id = ? AND carta_id = ?", userID, cartaID).First(&gif).Error; err != nil {
 			if err != gorm.ErrRecordNotFound {
@@ -135,11 +129,9 @@ func BuscarCartaPorID(c *fiber.Ctx) error {
 		}
 		imagemOuGif = gif.GifLink
 	} else {
-		// Se PersonalGif for falso, usa a imagem da tabela Carta
 		imagemOuGif = carta.Imagem
 	}
 
-	// Retorna a carta ou o gif e a quantidade acumulada na coleção do usuário
 	return c.JSON(fiber.Map{
 		"carta": map[string]interface{}{
 			"ID":        carta.ID,

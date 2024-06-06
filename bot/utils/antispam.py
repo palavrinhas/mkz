@@ -4,6 +4,7 @@ from api.obra import Obra
 from api.conta import Conta
 from telegram import InputMediaPhoto
 from utils.f import formatar_obras_categoria, formatar_ids
+import api.trocar as trocar_cmd
 from utils import f
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from utils import formatar
