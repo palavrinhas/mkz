@@ -75,6 +75,7 @@ class Conta:
         js = {"link":link}
         r = httpx.post(f"http://localhost:3000/criar-pedido/{user_id}/{msgid}/{carta_id}", headers=he, json=js).json()
         return True
-    
-    def aceitar_pedido_gif(user_id, pedido_id):
-        return True
+
+    def aceitar_pedido_gif(pedido_id):
+        r = httpx.get(f"http://localhost:3000/aceitar-pedido/{pedido_id}").json()
+        return r

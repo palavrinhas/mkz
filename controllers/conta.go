@@ -3,12 +3,14 @@ package internal
 import (
 	"api/db"
 	"api/models"
+	"errors"
 	"fmt"
 	"math/rand"
 	"strconv"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
+	"gorm.io/gorm"
 )
 
 func CriarPedido(c *fiber.Ctx) error {
@@ -56,14 +58,41 @@ func CriarPedido(c *fiber.Ctx) error {
 func AceitarPedido(c *fiber.Ctx) error {
 	pedidoID := c.Params("pedido_id")
 
-	pedido := models.Pedidos{}
+	var pedido models.Pedidos
+	if err := db.DB.Where("pedido_id = ?", pedidoID).First(&pedido).Error; err != nil {
+		return err
+	}
 
-	if err := db.DB.Find(&pedido, pedidoID).Error; err != nil {
+	var gif models.Gifs
+	if err := db.DB.Where("user_id = ? AND carta_id = ?", pedido.UserID, pedido.CartaID).First(&gif).Error; err != nil {
+		if !errors.Is(err, gorm.ErrRecordNotFound) {
+			return err
+		}
+
+		novoGif := models.Gifs{
+			UserID:  pedido.UserID,
+			CartaID: pedido.CartaID,
+			GifLink: pedido.GifLink,
+		}
+		if err := db.DB.Create(&novoGif).Error; err != nil {
+			return err
+		}
+	} else {
+		if err := db.DB.Model(&gif).Update("gif_link", pedido.GifLink).Error; err != nil {
+			return err
+		}
+	}
+
+	if err := db.DB.Where("pedido_id = ?", pedidoID).Delete(&pedido).Error; err != nil {
+		return err
+	}
+
+	if err := db.DB.Model(&models.ColecaoItem{}).Where("user_id = ? AND item_id = ?", pedido.UserID, pedido.CartaID).Update("personal_gif", true).Error; err != nil {
 		return err
 	}
 
 	return c.JSON(fiber.Map{
-		"mensagem": pedido,
+		"mensagem": "Pedido aceito com sucesso.",
 	})
 }
 
