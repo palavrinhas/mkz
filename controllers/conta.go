@@ -226,16 +226,42 @@ func ContaNova(c *fiber.Ctx) error {
 	})
 }
 
+// func BuscarUsuario(c *fiber.Ctx) error {
+// 	userID := c.Params("user_id")
+// 	var user models.Usuario
+
+// 	if err := db.DB.Find(&user, userID).Error; err != nil {
+// 		return err
+// 	}
+
+// 	if user.UserID == "" {
+// 		return c.JSON(fiber.Map{"erro": "não foi encontrado nenhum usuário."})
+// 	}
+
+// 	return c.JSON(user)
+// }
+
 func BuscarUsuario(c *fiber.Ctx) error {
 	userID := c.Params("user_id")
 	var user models.Usuario
 
-	if err := db.DB.Find(&user, userID).Error; err != nil {
-		return err
+	if err := db.DB.First(&user, "user_id = ?", userID).Error; err != nil {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"erro": "não foi encontrado nenhum usuário."})
 	}
 
-	if user.UserID == "" {
-		return c.JSON(fiber.Map{"erro": "não foi encontrado nenhum usuário."})
+	var colecaoItem models.ColecaoItem
+	specificItemID := user.CartaFav // Usar o valor de CartaFav como o ID do item específico
+
+	if err := db.DB.Where("user_id = ? AND item_id = ?", userID, specificItemID).First(&colecaoItem).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			// Se o item específico não for encontrado na coleção, atualize o campo CartaFav para 0
+			user.CartaFav = 0
+			if err := db.DB.Where("user_id = ?", userID).Save(&user).Error; err != nil {
+				return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"erro": "não foi possível atualizar o usuário."})
+			}
+		} else {
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"erro": "erro ao verificar a coleção do usuário."})
+		}
 	}
 
 	return c.JSON(user)

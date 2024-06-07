@@ -11,7 +11,6 @@ logging.basicConfig(
     level=logging.INFO
 )
 
-
 if __name__ == '__main__':
     prefixos = ["!","/","."]
     #application = ApplicationBuilder().token('6975062896:AAHT_GqFRIWifT3JGFZ9_UCXCtmIacwvlzs').build()

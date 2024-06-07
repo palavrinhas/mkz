@@ -415,7 +415,8 @@ class ButtonHandler:
                 obras, botoes = Obra.sortear_obras(6)
                 teclado = InlineKeyboardMarkup(botoes)
                 await query.edit_message_caption(caption=f"🤔 Prateleira à mostra! Por favor, confirme qual produto você procura nesta seção.\n\n{obras}", reply_markup=teclado)
-
+        
+    @apply_anti_spam
     async def aceitar_pedido_gif(self, update, context: CallbackContext):
         user_id = update.callback_query.from_user.id
         data = update.callback_query.data.split("_")
@@ -426,7 +427,7 @@ class ButtonHandler:
         msg = Conta.aceitar_pedido_gif(pedido_aceito)
 
         await query.edit_message_text(msg['mensagem'], parse_mode="HTML")
-    
+
     async def recusar_pedido_gif(self, update, context: CallbackContext):
         user_id = update.callback_query.from_user.id
         data = update.callback_query.data.split("_")
