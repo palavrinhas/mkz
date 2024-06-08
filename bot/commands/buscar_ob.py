@@ -27,7 +27,7 @@ async def buscar_obra(update: Updater, context: ContextTypes.DEFAULT_TYPE):
                 cartas_formatadas += f.formatar_obras_cartas(cartas_obra['cartas'])
                 cartas_que_tenho, adquiridas = cartas_adquiridas.cartas_ad(retorno["ObraID"], usuario)
 
-                legenda = f"{categoricamente} — <strong>{nome}</strong> [<code>{retorno['ObraID']}</code>\n<strong>🃏 — Total de cartas</strong>: <code>{cartas_obra['totalCartasObra']}</code>\n\nVocê possui <strong>{cartas_que_tenho}</strong> carta(s) de <strong>{cartas_obra['totalCartasObra']}</strong>\n{cartas_formatadas}"
+                legenda = f"{categoricamente} — <strong>{nome}</strong> [<code>{retorno['ObraID']}</code>\n<strong>🃏 — Total de cartas</strong>: <code>{cartas_obra['totalCartasObra']}</code>\n\nVocê possui <strong>{cartas_que_tenho}</strong> carta(s) de <strong>{cartas_obra['totalCartasObra']}</strong>\n\n{cartas_formatadas}"
 
                 await update.message.reply_photo(foto, caption=legenda, parse_mode="HTML")
 

@@ -77,6 +77,8 @@ if __name__ == '__main__':
     application.add_handler(CallbackQueryHandler(button_handler.obs_categoria_anterior, pattern="^obs_categoria_anterior_"))
     application.add_handler(CallbackQueryHandler(button_handler.obs_categoria_proximo, pattern="^obs_categoria_proximo_"))
 
+    application.add_handler(CallbackQueryHandler(button_handler.faltante_anterior, pattern="^faltantes_anterior_"))
+    application.add_handler(CallbackQueryHandler(button_handler.faltante_proximo, pattern="^faltantes_proxima_"))
 
     application.add_handler(CallbackQueryHandler(button_handler.proxima_pagina, pattern="^colecao_proximo_"))
     application.add_handler(CallbackQueryHandler(button_handler.pagina_anterior, pattern="^colecao_anterior_"))
