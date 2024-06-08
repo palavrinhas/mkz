@@ -12,6 +12,7 @@ from requests import get
 from utils import categoria
 from api.carta import Carta
 from utils import cartas_adquiridas
+from api.filtro import ColecaoFiltros
 
 class ButtonHandler:
     def __init__(self, application):
