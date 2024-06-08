@@ -314,11 +314,3 @@ func RemoverGiro(c *fiber.Ctx) error {
 		"atualizado": usuario.Giros,
 	})
 }
-
-// método não utilizado diretamente na API.
-func TrocarCartas(userID string, cartaID int, trocadorID string) {
-}
-
-// método para ser concluido
-func NomearColecao(userID string, nomeNovo string) {
-}

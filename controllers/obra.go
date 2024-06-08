@@ -280,22 +280,33 @@ func CartasPorObra(c *fiber.Ctx) error {
 
 	pageSize := 15
 	page, err := strconv.Atoi(c.Query("page", "1"))
-	if err != nil || page == 1 {
+	if err != nil || page < 1 {
 		page = 1
 	}
 
-	var cartas []models.Carta
+	var cartas []models.CartaComAcumulado
 
 	if page == 0 {
-		// Retorna todas as cartas sem paginação
-		if err := db.DB.Where("obra = ?", obraID).Order("nome ASC").Find(&cartas).Error; err != nil {
+		if err := db.DB.
+			Table("carta").
+			Select("carta.*, COALESCE(colecao_items.acumulado, 0) AS acumulado").
+			Joins("LEFT JOIN colecao_items ON carta.ID = colecao_items.item_id").
+			Where("carta.obra = ?", obraID).
+			Order("nome ASC").
+			Find(&cartas).Error; err != nil {
 			return err
 		}
 	} else {
-		// Retorna cartas paginadas
-		pageSize := 15
 		offset := (page - 1) * pageSize
-		if err := db.DB.Where("obra = ?", obraID).Order("nome ASC").Offset(offset).Limit(pageSize).Find(&cartas).Error; err != nil {
+		if err := db.DB.
+			Table("carta").
+			Select("carta.*, COALESCE(colecao_items.acumulado, 0) AS acumulado").
+			Joins("LEFT JOIN colecao_items ON carta.ID = colecao_items.item_id").
+			Where("carta.obra = ?", obraID).
+			Order("nome ASC").
+			Offset(offset).
+			Limit(pageSize).
+			Find(&cartas).Error; err != nil {
 			return err
 		}
 	}

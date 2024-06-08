@@ -230,7 +230,7 @@ func PegarColecaoFiltradaPorID(c *fiber.Ctx) error {
 		page, _ = strconv.Atoi(pageParam)
 	}
 
-	var cartas []models.Carta
+	var cartas []models.CartaComAcumulado
 	var totalCartas int64
 	var totalCartasDaObra int64
 	var obra models.Obra
@@ -247,6 +247,7 @@ func PegarColecaoFiltradaPorID(c *fiber.Ctx) error {
 	case "f":
 		db.DB.
 			Table("carta").
+			Select("carta.*, 0 AS acumulado").
 			Joins("LEFT JOIN colecao_items ON carta.ID = colecao_items.item_id AND colecao_items.user_id = ?", userID).
 			Where("carta.obra = ? AND colecao_items.item_id IS NULL", obraID).
 			Order("nome ASC").
@@ -257,6 +258,7 @@ func PegarColecaoFiltradaPorID(c *fiber.Ctx) error {
 	case "s":
 		db.DB.
 			Table("carta").
+			Select("carta.*, colecao_items.acumulado").
 			Joins("JOIN colecao_items ON carta.ID = colecao_items.item_id").
 			Where("colecao_items.user_id = ? AND carta.obra = ?", userID, obraID).
 			Order("nome ASC").

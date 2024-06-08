@@ -122,12 +122,11 @@ func BuscarCartaPorID(c *fiber.Ctx) error {
 	var imagemOuGif string
 	if colecaoItem.Acumulado >= 40 {
 		var gif models.Gifs
-		if err := db.DB.Where("user_id = ? AND carta_id = ?", userID, cartaID).First(&gif).Error; err != nil {
-			if err != gorm.ErrRecordNotFound {
-				return err
-			}
+		if err := db.DB.Where("user_id = ? AND carta_id = ?", userID, cartaID).First(&gif).Error; err == nil && gif.GifLink != "" {
+			imagemOuGif = gif.GifLink
+		} else {
+			imagemOuGif = carta.Imagem
 		}
-		imagemOuGif = gif.GifLink
 	} else {
 		imagemOuGif = carta.Imagem
 	}

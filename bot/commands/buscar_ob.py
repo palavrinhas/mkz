@@ -18,16 +18,17 @@ async def buscar_obra(update: Updater, context: ContextTypes.DEFAULT_TYPE):
             await update.message.reply_text("<strong>❗️ Erro: nenhuma obra encontrada com esse ID. Se quiser, pode tentar por nome.</strong>", parse_mode="HTML")
         else:
             categoricamente = categoria.emoji(retorno['categoria'])
-            cartas_formatadas = "\n"
+            cartas_formatadas = ""
             cartas_obra = get(f"http://localhost:3000/carta/obra/{nome}").json()
             nome = Obra.buscar_obra(retorno["ObraID"])["nome"]
             foto = retorno["imagem"]
+            print(cartas_obra)
 
             if cartas_obra['totalCartasObra'] <= 15:
                 cartas_formatadas += f.formatar_obras_cartas(cartas_obra['cartas'])
                 cartas_que_tenho, adquiridas = cartas_adquiridas.cartas_ad(retorno["ObraID"], usuario)
 
-                legenda = f"{categoricamente} — <strong>{nome}</strong>\n<strong>🃏 — Total de cartas</strong>: <code>{cartas_obra['totalCartasObra']}</code>\n\nVocê possui <strong>{cartas_que_tenho}</strong> carta(s) de <strong>{cartas_obra['totalCartasObra']}</strong>\n{cartas_formatadas}"
+                legenda = f"{categoricamente} — <strong>{nome}</strong> [<code>{retorno['ObraID']}</code>\n<strong>🃏 — Total de cartas</strong>: <code>{cartas_obra['totalCartasObra']}</code>\n\nVocê possui <strong>{cartas_que_tenho}</strong> carta(s) de <strong>{cartas_obra['totalCartasObra']}</strong>\n{cartas_formatadas}"
 
                 await update.message.reply_photo(foto, caption=legenda, parse_mode="HTML")
 
@@ -38,7 +39,7 @@ async def buscar_obra(update: Updater, context: ContextTypes.DEFAULT_TYPE):
                 teclado = InlineKeyboardMarkup([botoes])
                 # eu acho desnecessario colocar o ID da obra, mas né... <code>{retorno['ObraID']}</code>. 
                 legenda = f"""
-{categoricamente} — <strong>{nome}</strong>
+{categoricamente} — <strong>{nome}</strong> [<code>{retorno['ObraID']}</code>]
 <strong>🃏 — Total de cartas:</strong> <code>{cartas_obra['totalCartasObra']}</code>
 <i>Você possui <strong>{cartas_que_tenho}</strong> carta(s) de <strong>{cartas_obra['totalCartasObra']}</strong>.</i>
 
@@ -60,7 +61,7 @@ async def buscar_obra(update: Updater, context: ContextTypes.DEFAULT_TYPE):
 
             if quantidade_de_obras == 1:
                 categoricamente = categoria.emoji(retorno['obras'][0]['categoria'])
-                cartas_formatadas = "\n"
+                cartas_formatadas = ""
                 cartas_obra = get(f"http://localhost:3000/carta/obra/{retorno['obras'][0]['ObraID']}").json()
                 nome = retorno['obras'][0]['nome']
                 foto = retorno['obras'][0]["imagem"]
@@ -68,7 +69,7 @@ async def buscar_obra(update: Updater, context: ContextTypes.DEFAULT_TYPE):
                 if cartas_obra['totalCartasObra'] <= 15:
                     cartas_formatadas += f.formatar_obras_cartas(cartas_obra['cartas'])
                     cartas_que_tenho, adquiridas = cartas_adquiridas.cartas_ad(retorno["obras"][0]["ObraID"], usuario)
-                    legenda = f"{categoricamente} — <strong>{nome}</strong>\n<strong>🃏 — Total de cartas</strong>: <code>{cartas_obra['totalCartasObra']}</code>\nVocê possui <strong>{cartas_que_tenho}</strong> carta(s) de <strong>{cartas_obra['totalCartasObra']}</strong>\n{cartas_formatadas}"
+                    legenda = f"{categoricamente} — <strong>{nome}</strong> [<code>{retorno['obras'][0]['ObraID']}</code>] \n<strong>🃏 — Total de cartas</strong>: <code>{cartas_obra['totalCartasObra']}</code>\nVocê possui <strong>{cartas_que_tenho}</strong> carta(s) de <strong>{cartas_obra['totalCartasObra']}</strong>\n{cartas_formatadas}"
                     await update.message.reply_photo(foto, caption=legenda, parse_mode="HTML")
                 else:
                     cartas_formatadas = f.formatar_obras_cartas(cartas_obra['cartas'])
@@ -79,7 +80,7 @@ async def buscar_obra(update: Updater, context: ContextTypes.DEFAULT_TYPE):
                     teclado = InlineKeyboardMarkup([botoes])
 
                     legenda = f"""
-{categoricamente} — <strong>{nome}</strong>
+{categoricamente} — <strong>{nome}</strong> [<code>{retorno['obras'][0]['ObraID']}</code>]
 <strong>🃏 — Total de cartas:</strong> <code>{cartas_obra['totalCartasObra']}</code>
 <i>Você possui <strong>{cartas_que_tenho}</strong> carta(s) de <strong>{cartas_obra['totalCartasObra']}</strong>.</i>
 

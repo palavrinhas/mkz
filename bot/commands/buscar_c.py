@@ -12,7 +12,7 @@ async def buscar_carta(update: Updater, context: ContextTypes.DEFAULT_TYPE):
     if len(txt) == 2 and txt[1].isdigit():
         nome = texto.split("ing ")[1]
         retorno = Carta.buscar_carta(nome, usuario)
-        if "erro" in retorno:
+        if "Nenhuma carta" in retorno['message']:
             await update.message.reply_text("<strong>❗️ Erro: nenhuma carta encontrada com esse ID. Se quiser, pode tentar por nome.</strong>", parse_mode="HTML")
         else:
             foto = retorno['carta']['imagem']

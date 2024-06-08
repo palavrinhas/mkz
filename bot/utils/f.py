@@ -44,9 +44,10 @@ def formatar_obras_cartas(data):
     max_length_id = max(len(str(item['ID'])) for item in data)
     formatted_data = []
     for item in data:
+        emoji_cat = get_emoji(item['acumulado'])
         id_str = str(item['ID'])
         padding_spaces = ' ' * (max_length_id - len(id_str))
-        formatted_data.append(f"<code>{padding_spaces}</code><code>{id_str.rjust(len(id_str))}</code>. <strong>{item['nome']}</strong>")
+        formatted_data.append(f"<code>{padding_spaces}</code><code>{id_str.rjust(len(id_str))}</code>. <strong>{item['nome']}</strong> {emoji_cat}")
     return "\n".join(formatted_data)
 
 def formatar_obras_categoria(data):

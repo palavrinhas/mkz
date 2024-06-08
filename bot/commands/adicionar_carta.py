@@ -7,7 +7,7 @@ async def adicionar_carta(update: Updater, context: ContextTypes.DEFAULT_TYPE):
         try:
             texto = update.message.text.split("acarta ")[1]
             info = texto.split("|")
-            nome = Carta.criar_carta(info[0], info[1], info[2], info[3])
+            nome = Carta.criar_carta(info[0], info[1], info[2].split(" ")[0], info[3])
             t = f"<strong>✅ Carta criada</strong>\n<strong>ID</strong>: {nome}\n<strong>Nome</strong>: {info[0]}"
             await update.message.reply_text(t, parse_mode="HTML")
         except:  # noqa: E722

@@ -7,12 +7,13 @@ class FormatadorMensagem:
         pagina_atual = json_data['pagina_atual']
         total_paginas = json_data['total_paginas']
         img = json_data['obra']['imagem']
+        idee = json_data['content'][0]['obra']
         nome = json_data['obra']['nome']
         categoria = json_data['obra']['categoria']
         emj = emoji(categoria)
 
         fmt = f"""
-{emj} — <strong>{nome}</strong>
+{emj} — <strong>{nome}</strong> [<code>{idee}</code>]
 🥘 — <strong>{pagina_atual}/{total_paginas}</strong>
 
 <i><strong>{json_data['total_cartas']}</strong> ingredientes faltantes de <strong>{json_data['total_cartas_obra']}.</strong></i>
@@ -25,14 +26,16 @@ class FormatadorMensagem:
         pagina_atual = json_data['pagina_atual']
         total_paginas = json_data['total_paginas']
         img = json_data['obra']['imagem']
+        idee = json_data['content'][0]['obra']
         nome = json_data['obra']['nome']
         categoria = json_data['obra']['categoria']
         emj = emoji(categoria)
         fmt = f"""
-{emj} — <strong>{nome}</strong>
+{emj} — <strong>{nome}</strong> [<code>{idee}</code>]
 🥘 — <strong>{pagina_atual}/{total_paginas}</strong>
 
 <i><strong>{json_data['total_cartas']}</strong> ingredientes encontrados de <strong>{json_data['total_cartas_obra']}.</strong></i>
+
         """
         terminado = f.formatar_obras_cartas(json_data["content"])
         fmt += terminado

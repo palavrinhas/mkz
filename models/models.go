@@ -51,8 +51,13 @@ type Carta struct {
 type ColecaoItem struct {
 	UserID      string `json:"user_id"`
 	ItemID      uint   `json:"item_id"`
-	Acumulado   uint   // não vou colocar nada aqui porque retornará junto de outras coisas
+	Acumulado   uint   `json:"acumulado"`
 	PersonalGif bool   `json:"permitido"`
+}
+
+type CartaComAcumulado struct {
+	Carta
+	Acumulado uint `json:"acumulado"`
 }
 
 type Gifs struct {

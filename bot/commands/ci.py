@@ -37,8 +37,10 @@ async def colecao(update: Updater, context: ContextTypes.DEFAULT_TYPE) -> None:
                 formatado, img = FormatadorMensagem.formatar_filtro_colecao(faltantes_json)
                 await update.message.reply_photo(reply_to_message_id=update.message.message_id, photo=img, caption=formatado, parse_mode="HTML")
             elif falta and faltantes_json['total_cartas'] > 15:
+                
                 botoes = [InlineKeyboardButton("⬅️", callback_data=f"faltantes_anterior_{usuario_id}_{faltantes_json['pagina_atual'] - 1}_{obra_filtrada}_{faltantes_json['total_paginas']}"), InlineKeyboardButton("➡️", callback_data=f"faltantes_proxima_{usuario_id}_{faltantes_json['pagina_atual'] + 1}_{obra_filtrada}_{faltantes_json['total_paginas']}")]
                 teclado = InlineKeyboardMarkup([botoes])
+
                 formatado, img = FormatadorMensagem.formatar_filtro_colecao(faltantes_json)
                 await update.message.reply_photo(reply_to_message_id=update.message.message_id, photo=img, caption=formatado, parse_mode="HTML", reply_markup=teclado)
             else:
@@ -52,14 +54,29 @@ async def colecao(update: Updater, context: ContextTypes.DEFAULT_TYPE) -> None:
             return
         else:
             obra_filtrada = obra['obras'][0]['ObraID']
-            falta, faltantes_json, img = ColecaoFiltros.possuo(usuario_id, obra_filtrada)
-            if falta and faltantes_json['total_cartas'] <= 15:
-                formatado, img = FormatadorMensagem.formatar_filtro_possui(faltantes_json)
+            falta, possuo_json, img = ColecaoFiltros.possuo(usuario_id, obra_filtrada)
+            print(falta, possuo_json, img)
+            if possuo_json['total_cartas'] == 0:
+                await update.message.reply_text(reply_to_message_id=update.message.message_id, text="<strong>😿 Você ainda não tem nenhuma carta!</strong>\nProcure usar o comando <code>/pedido</code> no privado para ganhar novas cartas.", parse_mode="HTML")
+                return
+            if falta and possuo_json['total_cartas'] <= 15:
+                formatado, img = FormatadorMensagem.formatar_filtro_possui(possuo_json)
                 await update.message.reply_photo(reply_to_message_id=update.message.message_id, photo=img, caption=formatado, parse_mode="HTML")
-            elif falta and faltantes_json['total_cartas'] > 15:
-                botoes = [InlineKeyboardButton("⬅️", callback_data=f"possuo_anterior_{usuario_id}_{faltantes_json['pagina_atual'] - 1}_{obra_filtrada}_{faltantes_json['total_paginas']}"), InlineKeyboardButton("➡️", callback_data=f"possuo_proxima_{usuario_id}_{faltantes_json['pagina_atual'] + 1}_{obra_filtrada}_{faltantes_json['total_paginas']}")]
-                teclado = InlineKeyboardMarkup([botoes])
-                formatado, img = FormatadorMensagem.formatar_filtro_possui(faltantes_json)
-                await update.message.reply_photo(reply_to_message_id=update.message.message_id, photo=img, caption=formatado, parse_mode="HTML", reply_markup=teclado)
-            else:
-                await update.message.reply_photo(reply_to_message_id=update.message.message_id, photo=img,caption=faltantes_json, parse_mode="HTML")
+
+
+
+
+
+
+
+
+
+
+
+            # elif falta and faltantes_json['total_cartas'] > 15:
+            #     botoes = [InlineKeyboardButton("⬅️", callback_data=f"possuo_anterior_{usuario_id}_{faltantes_json['pagina_atual'] - 1}_{obra_filtrada}_{faltantes_json['total_paginas']}"), InlineKeyboardButton("➡️", callback_data=f"possuo_proxima_{usuario_id}_{faltantes_json['pagina_atual'] + 1}_{obra_filtrada}_{faltantes_json['total_paginas']}")]
+            #     teclado = InlineKeyboardMarkup([botoes])
+            #     formatado, img = FormatadorMensagem.formatar_filtro_possui(faltantes_json)
+            #     await update.message.reply_photo(reply_to_message_id=update.message.message_id, photo=img, caption=formatado, parse_mode="HTML", reply_markup=teclado)
+            # else:
+            #     await update.message.reply_photo(reply_to_message_id=update.message.message_id, photo=img,caption=faltantes_json, parse_mode="HTML")
