@@ -19,10 +19,9 @@ async def buscar_obra(update: Updater, context: ContextTypes.DEFAULT_TYPE):
         else:
             categoricamente = categoria.emoji(retorno['categoria'])
             cartas_formatadas = ""
-            cartas_obra = get(f"http://localhost:3000/carta/obra/{nome}").json()
+            cartas_obra = get(f"http://localhost:3000/carta/obra/{nome}?user_id={usuario}&paginado=true").json()
             nome = Obra.buscar_obra(retorno["ObraID"])["nome"]
             foto = retorno["imagem"]
-            print(cartas_obra)
 
             if cartas_obra['totalCartasObra'] <= 15:
                 cartas_formatadas += f.formatar_obras_cartas(cartas_obra['cartas'])
@@ -62,17 +61,18 @@ async def buscar_obra(update: Updater, context: ContextTypes.DEFAULT_TYPE):
             if quantidade_de_obras == 1:
                 categoricamente = categoria.emoji(retorno['obras'][0]['categoria'])
                 cartas_formatadas = ""
-                cartas_obra = get(f"http://localhost:3000/carta/obra/{retorno['obras'][0]['ObraID']}").json()
+                cartas_obra = get(f"http://localhost:3000/carta/obra/{retorno['obras'][0]['ObraID']}?user_id={usuario}&paginado=true").json()
                 nome = retorno['obras'][0]['nome']
                 foto = retorno['obras'][0]["imagem"]
 
                 if cartas_obra['totalCartasObra'] <= 15:
                     cartas_formatadas += f.formatar_obras_cartas(cartas_obra['cartas'])
                     cartas_que_tenho, adquiridas = cartas_adquiridas.cartas_ad(retorno["obras"][0]["ObraID"], usuario)
-                    legenda = f"{categoricamente} — <strong>{nome}</strong> [<code>{retorno['obras'][0]['ObraID']}</code>] \n<strong>🃏 — Total de cartas</strong>: <code>{cartas_obra['totalCartasObra']}</code>\nVocê possui <strong>{cartas_que_tenho}</strong> carta(s) de <strong>{cartas_obra['totalCartasObra']}</strong>\n{cartas_formatadas}"
+                    legenda = f"{categoricamente} — <strong>{nome}</strong> [<code>{retorno['obras'][0]['ObraID']}</code>] \n<strong>🃏 — Total de cartas</strong>: <code>{cartas_obra['totalCartasObra']}</code>\nVocê possui <strong>{cartas_que_tenho}</strong> carta(s) de <strong>{cartas_obra['totalCartasObra']}</strong>\n\n{cartas_formatadas}"
                     await update.message.reply_photo(foto, caption=legenda, parse_mode="HTML")
                 else:
                     cartas_formatadas = f.formatar_obras_cartas(cartas_obra['cartas'])
+
                     cartas_que_tenho, adquiridas = cartas_adquiridas.cartas_ad(retorno['obras'][0]["ObraID"], usuario)
 
                     botoes = [InlineKeyboardButton("⬅️", callback_data=f"obras_anterior_{retorno['obras'][0]['ObraID']}_{cartas_obra['page'] - 1}"), InlineKeyboardButton("➡️", callback_data=f"proxima_obras_{retorno['obras'][0]['ObraID']}_{cartas_obra['page'] + 1}")]

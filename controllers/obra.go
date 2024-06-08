@@ -262,6 +262,7 @@ func EditarObra(c *fiber.Ctx) error {
 
 func CartasPorObra(c *fiber.Ctx) error {
 	obraID := c.Params("obra_id")
+	userID := c.Query("user_id")
 
 	var obra models.Obra
 	if err := db.DB.First(&obra, "obra_id = ?", obraID).Error; err != nil {
@@ -284,24 +285,29 @@ func CartasPorObra(c *fiber.Ctx) error {
 		page = 1
 	}
 
+	// Verificar o parâmetro paginado
+	paginado := c.Query("paginado", "true") == "true"
+
 	var cartas []models.CartaComAcumulado
 
-	if page == 0 {
+	if !paginado {
+		// Retorna todas as cartas sem paginação
 		if err := db.DB.
 			Table("carta").
 			Select("carta.*, COALESCE(colecao_items.acumulado, 0) AS acumulado").
-			Joins("LEFT JOIN colecao_items ON carta.ID = colecao_items.item_id").
+			Joins("LEFT JOIN colecao_items ON carta.ID = colecao_items.item_id AND colecao_items.user_id = ?", userID).
 			Where("carta.obra = ?", obraID).
 			Order("nome ASC").
 			Find(&cartas).Error; err != nil {
 			return err
 		}
 	} else {
+		// Retorna cartas paginadas
 		offset := (page - 1) * pageSize
 		if err := db.DB.
 			Table("carta").
 			Select("carta.*, COALESCE(colecao_items.acumulado, 0) AS acumulado").
-			Joins("LEFT JOIN colecao_items ON carta.ID = colecao_items.item_id").
+			Joins("LEFT JOIN colecao_items ON carta.ID = colecao_items.item_id AND colecao_items.user_id = ?", userID).
 			Where("carta.obra = ?", obraID).
 			Order("nome ASC").
 			Offset(offset).
