@@ -61,21 +61,10 @@ async def colecao(update: Updater, context: ContextTypes.DEFAULT_TYPE) -> None:
             if falta and possuo_json['total_cartas'] <= 15:
                 formatado, img = FormatadorMensagem.formatar_filtro_possui(possuo_json)
                 await update.message.reply_photo(reply_to_message_id=update.message.message_id, photo=img, caption=formatado, parse_mode="HTML")
-
-
-
-
-
-
-
-
-
-
-
-            # elif falta and faltantes_json['total_cartas'] > 15:
-            #     botoes = [InlineKeyboardButton("⬅️", callback_data=f"possuo_anterior_{usuario_id}_{faltantes_json['pagina_atual'] - 1}_{obra_filtrada}_{faltantes_json['total_paginas']}"), InlineKeyboardButton("➡️", callback_data=f"possuo_proxima_{usuario_id}_{faltantes_json['pagina_atual'] + 1}_{obra_filtrada}_{faltantes_json['total_paginas']}")]
-            #     teclado = InlineKeyboardMarkup([botoes])
-            #     formatado, img = FormatadorMensagem.formatar_filtro_possui(faltantes_json)
-            #     await update.message.reply_photo(reply_to_message_id=update.message.message_id, photo=img, caption=formatado, parse_mode="HTML", reply_markup=teclado)
-            # else:
-            #     await update.message.reply_photo(reply_to_message_id=update.message.message_id, photo=img,caption=faltantes_json, parse_mode="HTML")
+            elif falta and faltantes_json['total_cartas'] > 15:
+                botoes = [InlineKeyboardButton("⬅️", callback_data=f"possuo_anterior_{usuario_id}_{faltantes_json['pagina_atual'] - 1}_{obra_filtrada}_{faltantes_json['total_paginas']}"), InlineKeyboardButton("➡️", callback_data=f"possuo_proxima_{usuario_id}_{faltantes_json['pagina_atual'] + 1}_{obra_filtrada}_{faltantes_json['total_paginas']}")]
+                teclado = InlineKeyboardMarkup([botoes])
+                formatado, img = FormatadorMensagem.formatar_filtro_possui(faltantes_json)
+                await update.message.reply_photo(reply_to_message_id=update.message.message_id, photo=img, caption=formatado, parse_mode="HTML", reply_markup=teclado)
+            else:
+                await update.message.reply_photo(reply_to_message_id=update.message.message_id, photo=img,caption=faltantes_json, parse_mode="HTML")
