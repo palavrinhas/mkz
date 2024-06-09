@@ -12,14 +12,16 @@ class FormatadorMensagem:
         categoria = json_data['obra']['categoria']
         emj = emoji(categoria)
 
+        terminado = f.formatar_obras_cartas(json_data["content"])
+        
         fmt = f"""
 {emj} — <strong>{nome}</strong> [<code>{idee}</code>]
 🥘 — <strong>{pagina_atual}/{total_paginas}</strong>
 
 <i><strong>{json_data['total_cartas']}</strong> ingredientes faltantes de <strong>{json_data['total_cartas_obra']}.</strong></i>
+
+{terminado}
         """
-        terminado = f.formatar_obras_cartas(json_data["content"])
-        fmt += terminado
         return fmt, img
 
     def formatar_filtro_possui(json_data: str) -> str:
@@ -30,15 +32,16 @@ class FormatadorMensagem:
         nome = json_data['obra']['nome']
         categoria = json_data['obra']['categoria']
         emj = emoji(categoria)
+
+        terminado = f.formatar_obras_cartas(json_data["content"])
         fmt = f"""
 {emj} — <strong>{nome}</strong> [<code>{idee}</code>]
 🥘 — <strong>{pagina_atual}/{total_paginas}</strong>
 
 <i><strong>{json_data['total_cartas']}</strong> ingredientes encontrados de <strong>{json_data['total_cartas_obra']}.</strong></i>
 
+{terminado}
         """
-        terminado = f.formatar_obras_cartas(json_data["content"])
-        fmt += terminado
         return fmt, img
 
     def formatar_obras_categoria(json_data: str, emoji) -> str:
