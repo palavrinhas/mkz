@@ -33,14 +33,14 @@ type Usuario struct {
 }
 
 type Obra struct {
-	ObraID    int    `gorm:"primaryKey;autoIncrement"`
+	ObraID    uint   `gorm:"primaryKey;autoIncrement"`
 	Nome      string `json:"nome"`
 	Categoria string `json:"categoria"`
 	Imagem    string `json:"imagem"`
 }
 
 type Carta struct {
-	ID        int    `gorm:"primaryKey"`
+	ID        uint   `gorm:"primaryKey;autoIncrement"`
 	Nome      string `json:"nome"`
 	Obra      int    `json:"obra"`
 	Imagem    string `json:"imagem"`

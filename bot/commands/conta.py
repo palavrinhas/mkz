@@ -10,9 +10,6 @@ def info_conta(user_id: str, nome: str) -> (str, Union[str, None]):
     moedas = conta['moedas']
     total_cartas = len(Conta.buscar_colecao_bruta(user_id))
 
-    # TODO: arrumar a parte de remover a carta dos favoritos
-    # caso a carta não exista mais na conta do usuário
-
     if conta['carta_fav'] == 0:
         ingrediente_fav = ""
         link = None
@@ -44,5 +41,5 @@ async def conta_usuario(update: Updater, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text(reply_to_message_id=update.message.message_id, text=texto, parse_mode="HTML")
     elif link.endswith(".gif") or link.endswith(".mp4"):
         await update.message.reply_animation(link, reply_to_message_id=update.message.message_id, caption=texto, parse_mode="HTML")
-    else:
+    elif link != None:
         await update.message.reply_photo(photo=link, reply_to_message_id=update.message.message_id, caption=texto, parse_mode="HTML")

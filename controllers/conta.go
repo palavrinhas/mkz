@@ -17,7 +17,7 @@ import (
 )
 
 const (
-	BotToken = "7051533328:AAFiEX6Zc963hIKB768UEOkDZ5qmAzYReR8"
+	BotToken = "6865129046:AAF06nCWUzgikowIljyLMnTe8nyX7zWGa7Q"
 	ApiURL   = "https://api.telegram.org/bot" + BotToken + "/sendMessage"
 )
 

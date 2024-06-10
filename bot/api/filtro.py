@@ -11,4 +11,5 @@ class ColecaoFiltros:
 
     def possuo(user_id: str, obra_id: str, pagina=1) -> (bool, Union[str, str]):
         retorno = httpx.get(f"http://localhost:3000/colecao/filtrada/{user_id}/{obra_id}?type=s&page={pagina}").json()
+        print(True, retorno, retorno['obra']['imagem'])
         return True, retorno, retorno['obra']['imagem']
