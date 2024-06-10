@@ -30,7 +30,7 @@ async def setar(update: Updater, context: ContextTypes.DEFAULT_TYPE):
         return ConversationHandler.END
     else:
         global job
-        job = context.job_queue.run_once(cancelar_gif, 10, update.message.chat_id, chat_id=update.message.chat_id)
+        job = context.job_queue.run_once(cancelar_gif, 60, update.message.chat_id, chat_id=update.message.chat_id)
         await update.message.reply_text(reply_to_message_id=update.message.message_id, text="Ebaa! Você tem o suficiente. Agora, me envie em até <strong>1 minuto</strong> o link do gif desejado. Lembrando que ele precisa seguir as regras!", parse_mode="HTML")
         return STATE_WAITING
 

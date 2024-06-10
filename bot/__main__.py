@@ -97,4 +97,4 @@ if __name__ == '__main__':
     application.add_handler(CallbackQueryHandler(button_handler.aceitar_pedido_gif, pattern="^aceitar_pedido_"))
     application.add_handler(CallbackQueryHandler(button_handler.recusar_pedido_gif, pattern="^recusar_pedido_"))
 
-    application.run_polling(allowed_updates=Update.ALL_TYPES)
+    application.run_polling()
