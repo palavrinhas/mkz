@@ -1,9 +1,0 @@
-curl -X POST \
-  -H "Content-Type: application/json" \
-  -d '{"ColecaoID":"202020","items":[{"itemID":1,"quantidade":5}]}' \
-  http://localhost:3000/colecao/adicionar
-
-curl -X POST \
-  -H "Content-Type: application/json" \
-  -d '{"user":"202020","items":{"itemID":3,"quantidade":1}}' \
-  http://localhost:3000/colecao/adicionar

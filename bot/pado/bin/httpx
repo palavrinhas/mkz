@@ -1,4 +1,4 @@
-#!/home/naftalino/m/bot/pado/bin/python
+#!/home/naftalino/backup_padocard/bot/pado/bin/python
 # -*- coding: utf-8 -*-
 import re
 import sys

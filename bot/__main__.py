@@ -14,7 +14,7 @@ logging.basicConfig(
 if __name__ == '__main__':
     prefixos = ["!","/","."]
     #application = ApplicationBuilder().token('6975062896:AAHT_GqFRIWifT3JGFZ9_UCXCtmIacwvlzs').build()
-    application = ApplicationBuilder().token("7051533328:AAFiEX6Zc963hIKB768UEOkDZ5qmAzYReR8").build()
+    application = ApplicationBuilder().token("7051533328:AAGlVJm25tMXEYM0LWeJZvXBJwEQD_H3f3c").build()
 
     button_handler = ButtonHandler(application)
 
@@ -25,14 +25,9 @@ if __name__ == '__main__':
     colecao_handler = PrefixHandler(prefixos, 'ci', ci.colecao)
     set_fav_handler = PrefixHandler(prefixos, 'fav', set_fav.setar)
 
+
     STATE_WAITING = 1
-    set_gif_handler = ConversationHandler(
-        entry_points=[PrefixHandler(prefixos, 'sgif', set_gif.setar)],
-        states={
-            STATE_WAITING: [MessageHandler(filters.Entity("url"), set_gif.processar_gif)]
-        },
-        fallbacks=[]
-    )
+    set_gif_handler = PrefixHandler(prefixos, 'sgif', set_gif.setar)
 
     # handlers de busca de obras e cartas por nome e IDs
     procurar_obra = PrefixHandler(prefixos, 'rc', buscar_ob.buscar_obra)
@@ -97,4 +92,4 @@ if __name__ == '__main__':
     application.add_handler(CallbackQueryHandler(button_handler.aceitar_pedido_gif, pattern="^aceitar_pedido_"))
     application.add_handler(CallbackQueryHandler(button_handler.recusar_pedido_gif, pattern="^recusar_pedido_"))
 
-    application.run_polling()
+    application.run_polling(allowed_updates=Update.ALL_TYPES)
