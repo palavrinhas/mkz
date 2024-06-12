@@ -34,7 +34,7 @@ async def girar_handler(update: Updater, context: ContextTypes.DEFAULT_TYPE):
             teclado = InlineKeyboardMarkup(botao)
 
             padaria_img = "https://lh3.googleusercontent.com/u/0/drive-viewer/AKGpiha1-i6iYVuCpEGxzSp9W0N1YCkqvQob-YljDBuxSGzfj4MUTE1cLroe48H0g_mtiuyFLPmOSBzNVpiLWgfZBcKyTcao10WEpw0=w1280-h658"
-            await update.message.reply_photo(padaria_img, caption=texto_girar, reply_markup=teclado, parse_mode="html")
+            await update.message.reply_animation(padaria_img, caption=texto_girar, reply_markup=teclado, parse_mode="html")
         else:
             await update.message.reply_text(
                 reply_to_message_id=update.message.message_id, text="<i><strong>A farinha de trigo está em falta.. Volte mais tarde!</strong></i>",
