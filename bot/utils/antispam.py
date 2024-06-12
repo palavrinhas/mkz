@@ -13,6 +13,8 @@ from utils import categoria
 from api.carta import Carta
 from utils import cartas_adquiridas
 from api.filtro import ColecaoFiltros
+import httpx
+import json
 
 class ButtonHandler:
     def __init__(self, application):
@@ -438,14 +440,61 @@ class ButtonHandler:
         msg = Conta.recusar_pedido_gif(pedido_recusado)
 
         await query.edit_message_text(msg['mensagem'], parse_mode="HTML")
-    
+
     async def anterior_imagem(self, update, context: CallbackContext):
         user_id = update.callback_query.from_user.id
         data = update.callback_query.data.split("_")
         query = update.callback_query
-        pagina = data[2]
-        obra = data[3]
+        print(data)
 
-        msg = Conta.recusar_pedido_gif(pedido_recusado)
+        pagina = int(data[2])
+        obra = int(data[3])
+        usuario = data[4]
 
-        await query.edit_message_text(msg['mensagem'], parse_mode="HTML")
+        if pagina < 1:
+            pagina = httpx.get(f"http://localhost:3000/carta/obra/imagem/{obra}?paginado=true&user_id={usuario}&page={pagina}").json()['totalCartasObra']
+        else:
+            pagina = pagina
+
+        cartas_obra = httpx.get(f"http://localhost:3000/carta/obra/imagem/{obra}?paginado=true&user_id={usuario}&page={pagina}").json()
+        print(cartas_obra)
+
+        botoes = [
+                InlineKeyboardButton("⬅️", callback_data=f"anterior_imagem_{pagina - 1}_{obra}_{usuario}"), InlineKeyboardButton("➡️", callback_data=f"proxima_imagem_{pagina + 1}_{obra}_{usuario}")
+            ]
+
+        teclado = InlineKeyboardMarkup([botoes])
+        emoji_cativeiro = categoria.get_emoji(cartas_obra['cartas'][0]['acumulado'])
+
+        legenda = f"📒 — {pagina}/{cartas_obra['totalCartasObra']}\n\n<code>{cartas_obra['cartas'][0]['ID']}</code>. <strong>{cartas_obra['cartas'][0]['nome']}</strong> — <i>{cartas_obra['obra']}</i>\n\n{emoji_cativeiro} (<code>x{cartas_obra['cartas'][0]['acumulado']}</code>)"
+
+        await query.edit_message_media(media=InputMediaPhoto(media=cartas_obra['cartas'][0]["imagem"], caption=legenda, parse_mode="HTML"), reply_markup=teclado)
+
+    async def proxima_imagem(self, update, context: CallbackContext):
+        user_id = update.callback_query.from_user.id
+        data = update.callback_query.data.split("_")
+        query = update.callback_query
+
+        pagina = int(data[2])
+        obra = int(data[3])
+        usuario = data[4]
+        total_paginas = httpx.get(f"http://localhost:3000/carta/obra/imagem/{obra}?paginado=true&user_id={usuario}&page={pagina}").json()['totalCartasObra']
+
+        if pagina > int(total_paginas):
+            pagina = 1
+        else:
+            pagina = pagina
+
+        cartas_obra = httpx.get(f"http://localhost:3000/carta/obra/imagem/{obra}?paginado=true&user_id={usuario}&page={pagina}").json()
+
+        botoes = [
+                InlineKeyboardButton("⬅️", callback_data=f"anterior_imagem_{pagina - 1}_{obra}_{usuario}"), InlineKeyboardButton("➡️", callback_data=f"proxima_imagem_{pagina + 1}_{obra}_{usuario}")
+            ]
+
+        teclado = InlineKeyboardMarkup([botoes])
+
+        emoji_cativeiro = categoria.get_emoji(cartas_obra['cartas'][0]['acumulado'])
+
+        legenda = f"📒 — {pagina}/{cartas_obra['totalCartasObra']}\n\n<code>{cartas_obra['cartas'][0]['ID']}</code>. <strong>{cartas_obra['cartas'][0]['nome']}</strong> — <i>{cartas_obra['obra']}</i>\n\n{emoji_cativeiro} (<code>x{cartas_obra['cartas'][0]['acumulado']}</code>)"
+
+        await query.edit_message_media(media=InputMediaPhoto(media=cartas_obra['cartas'][0]["imagem"], caption=legenda, parse_mode="HTML"), reply_markup=teclado)

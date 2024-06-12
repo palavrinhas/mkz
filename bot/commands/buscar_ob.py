@@ -19,7 +19,8 @@ async def buscar_obra(update: Updater, context: ContextTypes.DEFAULT_TYPE):
             await update.message.reply_text("<strong>❗️ Erro: nenhuma obra encontrada com esse ID. Se quiser, pode tentar pesquisar pelo nome e ver o ID.</strong>", parse_mode="HTML")
             return
         else:
-            cartas_obra = get(f"http://localhost:3000/carta/obra/{id_obra}?user_id={usuario}&paginado=false").json()
+            cartas_obra = get(f"http://localhost:3000/carta/obra/imagem/{id_obra}?user_id={usuario}&paginado=true").json()
+
             cartas = cartas_obra['cartas']
 
             total_paginas = cartas_obra['totalCartasObra']
@@ -34,10 +35,8 @@ async def buscar_obra(update: Updater, context: ContextTypes.DEFAULT_TYPE):
             emoji_cativeiro = categoria.get_emoji(acumulado)
 
             botoes = [
-                InlineKeyboardButton("⬅️", callback_data=f"anterior_imagem_{pagina_atual - 1}_{id_obra}"), InlineKeyboardButton("➡️", callback_data=f"proxima_imagem_{pagina_atual + 1}_{id_obra}")
+                InlineKeyboardButton("⬅️", callback_data=f"anterior_imagem_{pagina_atual - 1}_{id_obra}_{usuario}"), InlineKeyboardButton("➡️", callback_data=f"proxima_imagem_{pagina_atual + 1}_{id_obra}_{usuario}")
             ]
-
-            print(f"anterior_imagem_{pagina_atual - 1}_{id_obra}")
 
             teclado = InlineKeyboardMarkup([botoes])
 
