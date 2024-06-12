@@ -25,8 +25,6 @@ if __name__ == '__main__':
     colecao_handler = PrefixHandler(prefixos, 'ci', ci.colecao)
     set_fav_handler = PrefixHandler(prefixos, 'fav', set_fav.setar)
 
-
-    STATE_WAITING = 1
     set_gif_handler = PrefixHandler(prefixos, 'sgif', set_gif.setar)
 
     # handlers de busca de obras e cartas por nome e IDs

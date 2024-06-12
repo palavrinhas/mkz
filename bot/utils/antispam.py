@@ -438,3 +438,14 @@ class ButtonHandler:
         msg = Conta.recusar_pedido_gif(pedido_recusado)
 
         await query.edit_message_text(msg['mensagem'], parse_mode="HTML")
+    
+    async def anterior_imagem(self, update, context: CallbackContext):
+        user_id = update.callback_query.from_user.id
+        data = update.callback_query.data.split("_")
+        query = update.callback_query
+        pagina = data[2]
+        obra = data[3]
+
+        msg = Conta.recusar_pedido_gif(pedido_recusado)
+
+        await query.edit_message_text(msg['mensagem'], parse_mode="HTML")
