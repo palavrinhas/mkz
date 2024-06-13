@@ -93,4 +93,7 @@ if __name__ == '__main__':
     application.add_handler(CallbackQueryHandler(button_handler.anterior_imagem, pattern="^anterior_imagem_"))
     application.add_handler(CallbackQueryHandler(button_handler.proxima_imagem, pattern="^proxima_imagem_"))
 
+    application.add_handler(CallbackQueryHandler(button_handler.s_proxima_imagem, pattern="^s_proxima_imagem"))
+    application.add_handler(CallbackQueryHandler(button_handler.s_anterior_imagem, pattern="^s_anterior_imagem"))
+
     application.run_polling(allowed_updates=Update.ALL_TYPES)

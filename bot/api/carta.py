@@ -28,11 +28,11 @@ class Carta:
         n = {"termos":nome}
         r = httpx.post("http://localhost:3000/carta-nome/", headers=h, json=n).json()
         return r
-    
-    def buscar_carta_nome_imagem(nome: str) -> str:
+
+    def buscar_carta_nome_imagem(nome: str, pagina=1) -> str:
         h = {"Content-type":"application/json"}
         n = {"termos":nome}
-        r = httpx.post("http://localhost:3000/carta-nome/imagem/", headers=h, json=n).json()
+        r = httpx.post(f"http://localhost:3000/carta-nome/imagem/?pagina={pagina}", headers=h, json=n).json()
         return r
 
     def buscar_carta(carta_id, user_id):

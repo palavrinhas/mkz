@@ -28,12 +28,11 @@ async def buscar_carta(update: Updater, context: ContextTypes.DEFAULT_TYPE):
             else:
                 await update.message.reply_photo(foto, caption=caption_final, parse_mode="HTML")
 
-
     # paginador de cartas pesquisadas goes brrrrrrr
     elif len(txt) >= 3 and context.args[0] == 'i' in txt and isinstance(texto.split("ing i ")[1], str):
         retorno = Carta.buscar_carta_nome_imagem(texto.split("ing i ")[1])
+        termo = texto.split("ing i ")[1]
 
-        print(retorno)
         if "erro" in retorno or len(retorno['cartas']) == 0:
             await update.message.reply_text("<strong>❗️ Erro: nenhum ingrediente encontrado com esse nome.</strong>", parse_mode="HTML")
         else:
@@ -48,8 +47,8 @@ async def buscar_carta(update: Updater, context: ContextTypes.DEFAULT_TYPE):
             emoji_categoria = categoria.emoji(carta_inicial['categoria'])
 
             botoes = [
-                InlineKeyboardButton("⬅️", callback_data=f"s_anterior_imagem_{pagina_atual - 1}_{usuario}"),
-                InlineKeyboardButton("➡️", callback_data=f"s_proxima_imagem_{pagina_atual + 1}_{usuario}")
+                InlineKeyboardButton("⬅️", callback_data=f"s_anterior_imagem_{pagina_atual - 1}_{usuario}_{termo}"),
+                InlineKeyboardButton("➡️", callback_data=f"s_proxima_imagem_{pagina_atual + 1}_{usuario}_{termo}")
             ]
 
             teclado = InlineKeyboardMarkup([botoes])

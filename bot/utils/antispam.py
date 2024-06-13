@@ -498,3 +498,78 @@ class ButtonHandler:
         legenda = f"📒 — {pagina}/{cartas_obra['totalCartasObra']}\n\n<code>{cartas_obra['cartas'][0]['ID']}</code>. <strong>{cartas_obra['cartas'][0]['nome']}</strong> — <i>{cartas_obra['obra']}</i>\n\n{emoji_cativeiro} (<code>x{cartas_obra['cartas'][0]['acumulado']}</code>)"
 
         await query.edit_message_media(media=InputMediaPhoto(media=cartas_obra['cartas'][0]["imagem"], caption=legenda, parse_mode="HTML"), reply_markup=teclado)
+
+    async def s_proxima_imagem(self, update, context: CallbackContext):
+        user_id = update.callback_query.from_user.id
+        data = update.callback_query.data.split("_")
+        query = update.callback_query
+
+        pagina = data[3]
+        usuario = data[4]
+        termo = data[5]
+
+        t = Carta.buscar_carta_nome_imagem(termo)['totalPaginas']
+        if int(pagina) > t:
+            pagina = 1
+        else:
+            pagina = pagina
+        
+        retorno = Carta.buscar_carta_nome_imagem(termo, pagina=pagina)
+
+        carta_inicial = retorno['cartas'][0]
+        pagina_atual = retorno['paginaAtual']
+        total_paginas = retorno['totalPaginas']
+
+        foto = carta_inicial['imagem']
+        carta_id = carta_inicial['ID']
+        nome = carta_inicial['nome']
+        obra = Obra.buscar_obra(carta_inicial['obra'])['nome']
+        emoji_categoria = categoria.emoji(carta_inicial['categoria'])
+
+        botoes = [
+                InlineKeyboardButton("⬅️", callback_data=f"s_anterior_imagem_{pagina_atual - 1}_{usuario}_{termo}"),
+                InlineKeyboardButton("➡️", callback_data=f"s_proxima_imagem_{pagina_atual + 1}_{usuario}_{termo}")
+            ]
+
+        teclado = InlineKeyboardMarkup([botoes])
+        legenda = f"📒 — {pagina_atual}/{total_paginas}\n\n{emoji_categoria} <code>{carta_id}</code>. <strong>{nome}</strong> — <i>{obra}</i>"
+
+        await query.edit_message_media(media=InputMediaPhoto(media=foto, caption=legenda, parse_mode="HTML"), reply_markup=teclado)
+
+    async def s_anterior_imagem(self, update, context: CallbackContext):
+        user_id = update.callback_query.from_user.id
+        data = update.callback_query.data.split("_")
+        query = update.callback_query
+
+        pagina = data[3]
+        usuario = data[4]
+        termo = data[5]
+
+        t = Carta.buscar_carta_nome_imagem(termo)['totalPaginas']
+
+        if int(pagina) < 1:
+            pagina = t
+        else:
+            pagina = pagina
+
+        retorno = Carta.buscar_carta_nome_imagem(termo, pagina=pagina)
+
+        carta_inicial = retorno['cartas'][0]
+        pagina_atual = retorno['paginaAtual']
+        total_paginas = retorno['totalPaginas']
+
+        foto = carta_inicial['imagem']
+        carta_id = carta_inicial['ID']
+        nome = carta_inicial['nome']
+        obra = Obra.buscar_obra(carta_inicial['obra'])['nome']
+        emoji_categoria = categoria.emoji(carta_inicial['categoria'])
+
+        botoes = [
+                InlineKeyboardButton("⬅️", callback_data=f"s_anterior_imagem_{pagina_atual - 1}_{usuario}_{termo}"),
+                InlineKeyboardButton("➡️", callback_data=f"s_proxima_imagem_{pagina_atual + 1}_{usuario}_{termo}")
+            ]
+
+        teclado = InlineKeyboardMarkup([botoes])
+        legenda = f"📒 — {pagina_atual}/{total_paginas}\n\n{emoji_categoria} <code>{carta_id}</code>. <strong>{nome}</strong> — <i>{obra}</i>"
+
+        await query.edit_message_media(media=InputMediaPhoto(media=foto, caption=legenda, parse_mode="HTML"), reply_markup=teclado)
