@@ -34,6 +34,7 @@ if __name__ == '__main__':
     obras_categoria_handler = PrefixHandler(prefixos, 'p', obras_categoria.obs_categoria)
 
     # handlers de cadastro de obras e cartas
+
     add_obra = PrefixHandler(prefixos, 'aobra', adicionar_obra.adicionar_obra)
     add_carta = PrefixHandler(prefixos, 'acarta', adicionar_carta.adicionar_carta)
     varias_carta = PrefixHandler(prefixos, 'variascartas', varias_c.varias_cartas)
