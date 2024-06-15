@@ -581,12 +581,34 @@ class ButtonHandler:
         query = update.callback_query
         privar = query.data.split("_")[2]
 
+        conta = Conta.buscar_usuario(user_id)
+
+        notificar = "✅" if conta['notificar'] else "❌"        
+
         if privar == "False":
-            Conta.perfil_privado(True)
-            await query.answer("Beleza! Agora, seu perfil é privado.", show_alert=True)
+            botao = [
+                    [InlineKeyboardButton(f"🔒 Privar Perfil | ✅", callback_data=f"privar_perfil_True")
+                    ],
+                    [InlineKeyboardButton("💬 Atualizar Bio", callback_data="atualizar_bio")
+                    ],
+                    [InlineKeyboardButton(f"🔊 Notificação de giro | {notificar}", callback_data=f"notificar_giros_{conta['notificar']}")
+                ],
+            ]
+            teclado = InlineKeyboardMarkup(botao)
+            Conta.perfil_privado(user_id, True)
+            await query.edit_message_text("Opa! Aqui temos as suas configurações do perfil.", reply_markup=teclado)
         else:
-            Conta.perfil_privado(False)
-            await query.answer("Beleza! Agora, seu perfil é público.", show_alert=True)
+            botao = [
+                    [InlineKeyboardButton(f"🔒 Privar Perfil | ❌", callback_data=f"privar_perfil_False")
+                    ],
+                    [InlineKeyboardButton("💬 Atualizar Bio", callback_data="atualizar_bio")
+                    ],
+                    [InlineKeyboardButton(f"🔊 Notificação de giro | {notificar}", callback_data=f"notificar_giros_{conta['notificar']}")
+                ],
+            ]
+            teclado = InlineKeyboardMarkup(botao)
+            Conta.perfil_privado(user_id, False)
+            await query.edit_message_text("Opa! Aqui temos as suas configurações do perfil.", reply_markup=teclado)
 
     @apply_anti_spam
     async def notificar(self, update, context: CallbackContext):
@@ -597,11 +619,9 @@ class ButtonHandler:
         privar = query.data.split("_")[2]
 
         if privar == "False":
-            Conta.notificar_giro(True)
-            await query.answer("Beleza! Agora, vou te notificar sempre que acumular.", show_alert=True)
+            Conta.notificar_giro(user_id, True)
         else:
-            Conta.notificar_giro(False)
-            await query.answer("Beleza! Não vou mais te notificar sobre.", show_alert=True)
+            Conta.notificar_giro(user_id, False)
 
     @apply_anti_spam
     async def atualizar_biografia(self, update, context: CallbackContext):
