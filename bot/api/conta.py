@@ -82,3 +82,11 @@ class Conta:
     def recusar_pedido_gif(pedido_id):
         r = httpx.get(f"http://localhost:3000/recusar-pedido/{pedido_id}").json()
         return r
+
+    def perfil_privado(conta, privar):
+        r = httpx.get(f"http://localhost:3000/usuario/privado/{conta}?privar={privar}").json()
+        return r
+
+    def notificar_giro(conta, notificar):
+        r = httpx.get(f"http://localhost:3000/usuario/notificar/{conta}?notificar={notificar}").json()
+        return r

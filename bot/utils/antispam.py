@@ -579,8 +579,14 @@ class ButtonHandler:
         user_id = update.callback_query.from_user.id
         data = update.callback_query.data.split("_")
         query = update.callback_query
+        privar = query.data.split("_")[2]
 
-        print(query)
+        if privar == "False":
+            Conta.perfil_privado(True)
+            await query.answer("Beleza! Agora, seu perfil é privado.", show_alert=True)
+        else:
+            Conta.perfil_privado(False)
+            await query.answer("Beleza! Agora, seu perfil é público.", show_alert=True)
 
     @apply_anti_spam
     async def notificar(self, update, context: CallbackContext):
@@ -588,7 +594,14 @@ class ButtonHandler:
         data = update.callback_query.data.split("_")
         query = update.callback_query
 
-        print(query.data)
+        privar = query.data.split("_")[2]
+
+        if privar == "False":
+            Conta.notificar_giro(True)
+            await query.answer("Beleza! Agora, vou te notificar sempre que acumular.", show_alert=True)
+        else:
+            Conta.notificar_giro(False)
+            await query.answer("Beleza! Não vou mais te notificar sobre.", show_alert=True)
 
     @apply_anti_spam
     async def atualizar_biografia(self, update, context: CallbackContext):
