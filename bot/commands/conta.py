@@ -10,9 +10,6 @@ def info_conta(user_id: str, nome: str) -> (str, Union[str, None]):
     moedas = conta['moedas']
     total_cartas = len(Conta.buscar_colecao_bruta(user_id))
 
-    # TODO: arrumar a parte de remover a carta dos favoritos
-    # caso a carta não exista mais na conta do usuário
-
     if conta['carta_fav'] == 0:
         ingrediente_fav = ""
         link = None
