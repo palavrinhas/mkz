@@ -573,3 +573,27 @@ class ButtonHandler:
         legenda = f"📒 — {pagina_atual}/{total_paginas}\n\n{emoji_categoria} <code>{carta_id}</code>. <strong>{nome}</strong> — <i>{obra}</i>"
 
         await query.edit_message_media(media=InputMediaPhoto(media=foto, caption=legenda, parse_mode="HTML"), reply_markup=teclado)
+
+    @apply_anti_spam
+    async def perfil_privado(self, update, context: CallbackContext):
+        user_id = update.callback_query.from_user.id
+        data = update.callback_query.data.split("_")
+        query = update.callback_query
+
+        print(query)
+
+    @apply_anti_spam
+    async def notificar(self, update, context: CallbackContext):
+        user_id = update.callback_query.from_user.id
+        data = update.callback_query.data.split("_")
+        query = update.callback_query
+
+        print(query.data)
+
+    @apply_anti_spam
+    async def atualizar_biografia(self, update, context: CallbackContext):
+        user_id = update.callback_query.from_user.id
+        data = update.callback_query.data.split("_")
+        query = update.callback_query
+
+        print(query.data)

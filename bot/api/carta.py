@@ -42,3 +42,4 @@ class Carta:
     def cartas_da_obra(obra_id, pagina=1):
         r = httpx.get(f"http://localhost:3000/carta/obra/{obra_id}?page={pagina}").json()
         return r
+

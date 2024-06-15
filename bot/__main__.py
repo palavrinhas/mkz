@@ -2,7 +2,7 @@ import logging
 from telegram import Update
 from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler, PrefixHandler
 from telegram.ext import Application, CallbackQueryHandler, CommandHandler, ContextTypes, MessageHandler, filters, ConversationHandler, CallbackContext
-from commands import trocar_cmd, conta, start_cmd, giro, ci, buscar_c, buscar_ob, adicionar_carta, adicionar_obra, varias_c, bkp, set_adm, editar_c, editar_ob, set_fav, obras_categoria, set_gif, ajuda
+from commands import trocar_cmd, conta, start_cmd, giro, ci, buscar_c, buscar_ob, adicionar_carta, adicionar_obra, varias_c, bkp, set_adm, editar_c, editar_ob, set_fav, obras_categoria, set_gif, ajuda, config
 from utils.antispam import ButtonHandler
 from api.conta import Conta
 
@@ -12,6 +12,7 @@ logging.basicConfig(
 )
 
 if __name__ == '__main__':
+
     prefixos = ["!","/","."]
     #application = ApplicationBuilder().token('6975062896:AAHT_GqFRIWifT3JGFZ9_UCXCtmIacwvlzs').build()
     application = ApplicationBuilder().token("7051533328:AAGlVJm25tMXEYM0LWeJZvXBJwEQD_H3f3c").build()
@@ -25,6 +26,7 @@ if __name__ == '__main__':
     colecao_handler = PrefixHandler(prefixos, 'ci', ci.colecao)
     set_fav_handler = PrefixHandler(prefixos, 'fav', set_fav.setar)
     help_handler = PrefixHandler(prefixos, 'help', ajuda.help)
+    config_handler = PrefixHandler(prefixos, 'config', config.configuracoes)
 
     set_gif_handler = PrefixHandler(prefixos, 'sgif', set_gif.setar)
 
@@ -48,6 +50,7 @@ if __name__ == '__main__':
     bkp = PrefixHandler(prefixos, 'bkp', bkp.backup_db)
 
     # nhe, aqui é só para cadastrar os handlers, eu deixo embaralhado pq é meio foda-se mesmo
+    application.add_handler(config_handler)
     application.add_handler(set_gif_handler)
     application.add_handler(help_handler)
     application.add_handler(troca_handler)
@@ -98,5 +101,10 @@ if __name__ == '__main__':
 
     application.add_handler(CallbackQueryHandler(button_handler.s_proxima_imagem, pattern="^s_proxima_imagem"))
     application.add_handler(CallbackQueryHandler(button_handler.s_anterior_imagem, pattern="^s_anterior_imagem"))
+
+    application.add_handler(CallbackQueryHandler(button_handler.perfil_privado, pattern="^privar_perfil_"))
+    application.add_handler(CallbackQueryHandler(button_handler.notificar, pattern="^notificar_giros_"))
+
+    application.add_handler(CallbackQueryHandler(button_handler.atualizar_biografia, pattern="^atualizar_bio"))
 
     application.run_polling(allowed_updates=Update.ALL_TYPES)

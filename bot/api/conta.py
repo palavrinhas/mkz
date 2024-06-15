@@ -39,7 +39,7 @@ class Conta:
     def buscar_colecao(user_id: str) -> str:
         r = httpx.get(f"http://localhost:3000/colecao/{user_id}").json()
         return r
-    
+
     def buscar_colecao_bruta(user_id: str) -> str:
         r = httpx.get(f"http://localhost:3000/colecao/bruta/{user_id}").json()
         return r
