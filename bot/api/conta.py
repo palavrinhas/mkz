@@ -90,3 +90,9 @@ class Conta:
     def notificar_giro(conta, notificar):
         r = httpx.get(f"http://localhost:3000/usuario/notificar/{conta}?notificar={notificar}").json()
         return r
+    
+    def definir_bio(conta, texto):
+        h = {"Content-type":"application/json"}
+        js = {"bio":texto}
+        r = httpx.post(f"http://localhost:3000/bio/{conta}", headers=h, json=js).json()
+        return r

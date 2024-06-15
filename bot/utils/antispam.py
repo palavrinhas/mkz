@@ -1,4 +1,5 @@
 from telegram.ext import CallbackContext
+from telegram import Update
 import time
 from api.obra import Obra
 from api.conta import Conta
@@ -15,12 +16,21 @@ from utils import cartas_adquiridas
 from api.filtro import ColecaoFiltros
 import httpx
 import json
+from telegram.ext import (
+    Application,
+    CommandHandler,
+    ContextTypes,
+    ConversationHandler,
+    MessageHandler,
+    CallbackQueryHandler,
+    filters,
+)
 
 class ButtonHandler:
     def __init__(self, application):
         self.application = application
         self.user_button_interaction_time = {}
-        self.ANTI_SPAM_TIME = 5
+        self.ANTI_SPAM_TIME = 4
 
     @staticmethod
     def apply_anti_spam(func):
@@ -31,7 +41,7 @@ class ButtonHandler:
                 await func(self, update, context)
                 self.update_interaction_time(user_id, button_id)
             else:
-                await update.callback_query.answer(show_alert=True, text='Espere 5s antes de apertar outro botão.')
+                await update.callback_query.answer(show_alert=True, text='Espere 4s antes de apertar outro botão.')
         return wrapper
 
     def anti_spam(self, user_id, button_id):
@@ -646,11 +656,3 @@ class ButtonHandler:
             teclado = InlineKeyboardMarkup(botao)
             await query.edit_message_text("Opa! Aqui temos as suas configurações do perfil.", reply_markup=teclado)
             Conta.notificar_giro(user_id, False)
-
-    @apply_anti_spam
-    async def atualizar_biografia(self, update, context: CallbackContext):
-        user_id = update.callback_query.from_user.id
-        data = update.callback_query.data.split("_")
-        query = update.callback_query
-
-        print(query.data)
