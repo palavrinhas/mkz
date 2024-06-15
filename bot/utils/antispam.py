@@ -615,12 +615,36 @@ class ButtonHandler:
         user_id = update.callback_query.from_user.id
         data = update.callback_query.data.split("_")
         query = update.callback_query
+        notificar = query.data.split("_")[2]
+        conta = Conta.buscar_usuario(user_id)
 
-        privar = query.data.split("_")[2]
+        privado = "✅" if conta['privado'] else "❌"       
 
-        if privar == "False":
+        if notificar == "False":
+            botao = [
+                    [InlineKeyboardButton(f"🔒 Privar Perfil | {privado}", callback_data=f"privar_perfil_{conta['privado']}")
+                    ],
+                    [InlineKeyboardButton("💬 Atualizar Bio", callback_data="atualizar_bio")
+                    ],
+                    [InlineKeyboardButton(f"🔊 Notificação de giro | ✅", callback_data=f"notificar_giros_True")
+                ],
+            ]
+
+            teclado = InlineKeyboardMarkup(botao)
+            await query.edit_message_text("Opa! Aqui temos as suas configurações do perfil.", reply_markup=teclado)
             Conta.notificar_giro(user_id, True)
         else:
+            botao = [
+                    [InlineKeyboardButton(f"🔒 Privar Perfil | {privado}", callback_data=f"privar_perfil_{conta['privado']}")
+                    ],
+                    [InlineKeyboardButton("💬 Atualizar Bio", callback_data="atualizar_bio")
+                    ],
+                    [InlineKeyboardButton(f"🔊 Notificação de giro | ❌", callback_data=f"notificar_giros_False")
+                ],
+            ]
+
+            teclado = InlineKeyboardMarkup(botao)
+            await query.edit_message_text("Opa! Aqui temos as suas configurações do perfil.", reply_markup=teclado)
             Conta.notificar_giro(user_id, False)
 
     @apply_anti_spam
