@@ -22,8 +22,10 @@ def info_conta(user_id: str, nome: str) -> (str, Union[str, None]):
         ingrediente_fav = f"\n⭐️ Ingrediente favorito:\n<code>{conta['carta_fav']}</code>. <strong>{ifs['carta']['nome']}</strong> {categoria.get_emoji(ifs['quantidade_acumulada'])}\n"
         link = ifs['carta']['imagem']
     bio = conta['bio'] if conta['bio'] != "" else "Bio não definida pelo usuário."
+    privado = conta['privado']
 
-    texto = f"""
+    if privado == False:
+        texto = f"""
 <strong>🪪 Cartão Fidelidade</strong>
 <strong>🔖 Nome</strong>: {nome}
 <strong>🏷 Membro:</strong> {membro}
@@ -33,6 +35,15 @@ def info_conta(user_id: str, nome: str) -> (str, Union[str, None]):
 💵 <strong>Dinheiro:</strong> {moedas}
 
 🐱 <strong>Bio</strong>: <i>{bio}</i> 
+    """
+    else:
+        texto = f"""
+<strong>🪪 Cartão Fidelidade:</strong>
+
+<i>😾 Perfil confidencial!</i>
+<strong>🔖 Nome</strong>: {nome}
+
+{ingrediente_fav}
     """
     return texto, link
 

@@ -17,15 +17,17 @@ async def atualizar_biografia(update: Update, context: CallbackContext):
         user_id = update.callback_query.from_user.id
         data = update.callback_query.data.split("_")
         query = update.callback_query
-
         await query.edit_message_text("Viva! Uma biografia. Agora, me envie o texto que deseja colocar, ele não pode ultrapassar 72 caracteres.")
         return RECEBER
 
 async def receber_biografia(update: Update, context: CallbackContext):
-        r = Conta.definir_bio(update.message.from_user.id, update.message.text)
-        print(r)
-        await update.message.reply_text(f"✅ Sua bio agora é: {update.message.text}")
-        return ConversationHandler.END
+        if len(update.message.text) > 72:
+            await update.message.reply_text(reply_to_message_id=update.message.message_id, text="Perdão, sua bio ultrapassa 72 caracteres. Ação cancelada.")
+            return ConversationHandler.END
+        else:
+            r = Conta.definir_bio(update.message.from_user.id, update.message.text)
+            await update.message.reply_text(f"✅ Sua bio agora é: {update.message.text}")
+            return ConversationHandler.END
 
 if __name__ == '__main__':
 
