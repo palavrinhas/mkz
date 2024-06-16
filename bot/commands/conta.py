@@ -21,6 +21,7 @@ def info_conta(user_id: str, nome: str) -> (str, Union[str, None]):
         ifs = Carta.buscar_carta(conta['carta_fav'], user_id)
         ingrediente_fav = f"\n⭐️ Ingrediente favorito:\n<code>{conta['carta_fav']}</code>. <strong>{ifs['carta']['nome']}</strong> {categoria.get_emoji(ifs['quantidade_acumulada'])}\n"
         link = ifs['carta']['imagem']
+    bio = conta['bio'] if conta['bio'] != "" else "Bio não definida pelo usuário."
 
     texto = f"""
 <strong>🪪 Cartão Fidelidade</strong>
@@ -30,6 +31,8 @@ def info_conta(user_id: str, nome: str) -> (str, Union[str, None]):
 🛒 <strong>Cardápio:</strong> {total_cartas} <strong>pães</strong>
 🛎 <strong>Pedidos:</strong> {conta['giros']} <strong>(Máx)</strong>
 💵 <strong>Dinheiro:</strong> {moedas}
+
+🐱 <strong>Bio</strong>: <i>{bio}</i> 
     """
     return texto, link
 
