@@ -2,7 +2,7 @@ import logging
 from telegram import Update
 from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler, PrefixHandler
 from telegram.ext import Application, CallbackQueryHandler, CommandHandler, ContextTypes, MessageHandler, filters, ConversationHandler, CallbackContext
-from commands import trocar_cmd, conta, start_cmd, giro, ci, buscar_c, buscar_ob, adicionar_carta, adicionar_obra, varias_c, bkp, set_adm, editar_c, editar_ob, set_fav, obras_categoria, set_gif, ajuda, config
+from commands import trocar_cmd, conta, start_cmd, giro, ci, buscar_c, buscar_ob, adicionar_carta, adicionar_obra, varias_c, bkp, set_adm, editar_c, editar_ob, set_fav, obras_categoria, set_gif, ajuda, config, criar_user, wishlist
 from utils.antispam import ButtonHandler
 from api.conta import Conta
 
@@ -37,6 +37,7 @@ if __name__ == '__main__':
 
     button_handler = ButtonHandler(application)
 
+    # handlers básicos
     start_handler = CommandHandler('start', start_cmd.start)
     girar_handler = PrefixHandler(prefixos, 'pedido', giro.girar_handler)
     conta_handler = PrefixHandler(prefixos, 'conta', conta.conta_usuario)
@@ -45,8 +46,11 @@ if __name__ == '__main__':
     set_fav_handler = PrefixHandler(prefixos, 'fav', set_fav.setar)
     help_handler = PrefixHandler(prefixos, 'help', ajuda.help)
     config_handler = PrefixHandler(prefixos, 'config', config.configuracoes)
-
+    cadastrar_user_handler = PrefixHandler(prefixos, 'cadbeta', criar_user.cadastrar)
     set_gif_handler = PrefixHandler(prefixos, 'sgif', set_gif.setar)
+
+    criar_wl_handler = PrefixHandler(prefixos, 'cwl', wishlist.criar_wl)
+    buscar_wl_handler = PrefixHandler(prefixos, 'wl', wishlist.buscar_wl)
 
     # handlers de busca de obras e cartas por nome e IDs
     procurar_obra = PrefixHandler(prefixos, 'rc', buscar_ob.buscar_obra)
@@ -69,6 +73,7 @@ if __name__ == '__main__':
 
     # nhe, aqui é só para cadastrar os handlers, eu deixo embaralhado pq é meio foda-se mesmo
     application.add_handler(config_handler)
+    application.add_handler(cadastrar_user_handler)
     application.add_handler(set_gif_handler)
     application.add_handler(help_handler)
     application.add_handler(troca_handler)
@@ -87,6 +92,8 @@ if __name__ == '__main__':
     application.add_handler(add_obra)
     application.add_handler(add_carta)
     application.add_handler(set_fav_handler)
+    application.add_handler(criar_wl_handler)
+    application.add_handler(buscar_wl_handler)
 
     application.add_handler(CallbackQueryHandler(button_handler.pagina_obras_proxima, pattern="^proxima_search_obras_"))
     application.add_handler(CallbackQueryHandler(button_handler.pagina_obras_anterior, pattern="^anterior_search_obras_"))

@@ -18,7 +18,10 @@ class Conta:
         return r
 
     def inserir_giros(user_id: str, quantidade_giros: int) -> bool:
-        return True
+        js = {"giros":int(quantidade_giros)}
+        h = {"content-type":"application/json"}
+        r = httpx.post(f"http://localhost:3000/inserir/giros/{user_id}", headers=h, json=js).json()
+        return r
 
     def remover_giro(user_id: str) -> True:
         httpx.get(f"http://localhost:3000/giros/remover/{user_id}")
