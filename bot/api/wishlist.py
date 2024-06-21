@@ -14,7 +14,6 @@ class Wishlist:
         header = {"Content-Type":"application/json"}
         js = {"items":items}
         r = httpx.post(f"http://localhost:3000/inserir/wl/", headers=header, json=js).json()
-        print(r)
         return r
 
     def remover_item_wishlist(user_id, wishlist_id,carta_id):
