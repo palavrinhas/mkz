@@ -3,6 +3,7 @@ from telegram import Update
 from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler, PrefixHandler
 from telegram.ext import Application, CallbackQueryHandler, CommandHandler, ContextTypes, MessageHandler, filters, ConversationHandler, CallbackContext
 from commands import trocar_cmd, conta, start_cmd, giro, ci, buscar_c, buscar_ob, adicionar_carta, adicionar_obra, varias_c, set_adm, editar_c, editar_ob, set_fav, obras_categoria, set_gif, ajuda, config, criar_user, wishlist
+from commands.wishlist import INICIAR, DAR_NOME_WL, CARTAS_PARA_WL
 from utils.antispam import ButtonHandler
 from api.conta import Conta
 
@@ -48,8 +49,17 @@ if __name__ == '__main__':
     config_handler = PrefixHandler(prefixos, 'config', config.configuracoes)
     cadastrar_user_handler = PrefixHandler(prefixos, 'cadbeta', criar_user.cadastrar)
     set_gif_handler = PrefixHandler(prefixos, 'sgif', set_gif.setar)
+    wl_user = PrefixHandler(prefixos, 'wls', wishlist.listar_wl)
 
-    criar_wl_handler = PrefixHandler(prefixos, 'cwl', wishlist.criar_wl)
+    criar_wl_handler = ConversationHandler(
+        entry_points=[CommandHandler("cwl", wishlist.criar_wl)],
+        states={
+            DAR_NOME_WL: [MessageHandler(filters.TEXT, wishlist.nomear_wl)],
+            CARTAS_PARA_WL: [MessageHandler(filters.TEXT, wishlist.inserir_cartas_wl)]
+        },
+        fallbacks=[],
+    )
+
     buscar_wl_handler = PrefixHandler(prefixos, 'wl', wishlist.buscar_wl)
 
     # handlers de busca de obras e cartas por nome e IDs
@@ -72,6 +82,7 @@ if __name__ == '__main__':
 
     # nhe, aqui é só para cadastrar os handlers, eu deixo embaralhado pq é meio foda-se mesmo
     application.add_handler(config_handler)
+    application.add_handler(wl_user)
     application.add_handler(cadastrar_user_handler)
     application.add_handler(set_gif_handler)
     application.add_handler(help_handler)

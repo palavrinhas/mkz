@@ -1,7 +1,7 @@
 import httpx
 
 class Wishlist:
-    def criar_wishlist(user_id, nome):
+    def criar_wishlist(user_id, nome="meu cativeiro!"):
         header = {"Content-type":"application/json"}
         js = {"nome":str(nome)}
         r = httpx.post(f"http://localhost:3000/cadastrar/wl/?user_id={user_id}", headers=header, json=js).json()
