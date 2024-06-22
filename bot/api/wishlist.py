@@ -26,18 +26,8 @@ class Wishlist:
 
     def wishlists_usuario(user_id):
         r = httpx.get(f"http://localhost:3000/wishlists/{user_id}").json()
-        print(r)
         return r
 
     def deletar_wishlist(wishlist_id):
         r = httpx.get(f"http://localhost:3000/delete/wl/{wishlist_id}").json()
-        print(r)
         return r
-
-#Wishlist.criar_wishlist(1432442804, "Sou um usuário fantasma!")
-#Wishlist.inserir_item_wishlist(1432442804, 8, [13, 150])
-#Wishlist.deletar_wishlist(8)
-#Wishlist.wishlist_completa(8)
-# Wishlist.wishlist_completa(8)
-# Wishlist.remover_item_wishlist(1432442804, 8, 13)
-# Wishlist.wishlist_completa(8)
