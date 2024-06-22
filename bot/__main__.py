@@ -34,7 +34,7 @@ if __name__ == '__main__':
 
     prefixos = ["!","/","."]
     #application = ApplicationBuilder().token('6975062896:AAHT_GqFRIWifT3JGFZ9_UCXCtmIacwvlzs').build()
-    application = ApplicationBuilder().token("7051533328:AAGlVJm25tMXEYM0LWeJZvXBJwEQD_H3f3c").build()
+    application = ApplicationBuilder().token("7051533328:AAEDAakd429GO9GtWU3MAVla7B0_lFV4b6Q").build()
 
     button_handler = ButtonHandler(application)
 

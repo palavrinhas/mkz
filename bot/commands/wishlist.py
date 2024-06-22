@@ -9,6 +9,7 @@ from telegram.ext import (
     MessageHandler,
     filters,
 )
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup  # noqa: F811
 
 INICIAR, DAR_NOME_WL, CARTAS_PARA_WL = range(3)
 
@@ -34,16 +35,26 @@ class Formatar:
 async def nomear_wl(update: Updater, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.message.from_user.id
     n = update.message.from_user.first_name
-    # precisa paginar a porra da lista
     infos.append(update.message.text)
-    await update.message.reply_text("Nome bonito, nome formoso! agora, me envie até 30 IDs que você esteja procurando, em formato de lista separado por espaço. Mas atenção! Apenas 10 deles podem ser de pães que você já tem.")
+    await update.message.reply_text("Nome bonito, nome formoso! Agora, me envie até 30 IDs que você esteja procurando, em formato de lista separado por espaço.\n⚠️ Mas atenção! Apenas 10 deles podem ser de pães que você já tem.")
     return CARTAS_PARA_WL
 
 async def inserir_cartas_wl(update: Updater, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.message.from_user.id
     n = update.message.from_user.first_name
-    print(update.message.text.split())
-    await update.message.reply_text("recebendo!")
+    cartas = update.message.text.split()
+    if len(cartas) > 30:
+        await update.message.reply_text("Você pode inserir somente 30 ingredientes. Tente novamente!")
+        return ConversationHandler.END
+    for carta in cartas:
+        c = Carta.buscar_carta(carta, user_id)
+        if "Nenhuma carta" in c['message']:
+            await update.message.reply_text("Tem algum ID aí que não existe. Verifique se está tudo certinho, ok? Você pode tentar novamente.")
+            return ConversationHandler.END
+    
+    n_id = Wishlist.criar_wishlist(user_id, infos[0])['retorno']['WishlistID']
+    c_inseridas = Wishlist.inserir_item_wishlist(user_id, n_id, cartas)
+    await update.message.reply_text(f"🆔 Wishlist ID: <code>{n_id}</code>\n🥞 Ingredientes: <code>{len(cartas)}</code>\n\nVocê pode ver os itens da lista com <code>/wl {n_id}</code>.", reply_markup="HTML")
     return ConversationHandler.END
 
 async def criar_wl(update: Updater, context: ContextTypes.DEFAULT_TYPE):
@@ -53,7 +64,7 @@ async def criar_wl(update: Updater, context: ContextTypes.DEFAULT_TYPE):
     if update.message.chat.type != "private":
         await update.message.reply_text("Você não pode utilizar esse comando aqui. Somente no privado.")
         return
-    
+
     premium = Conta.buscar_usuario(user_id)['premium']
     quantidade_wl = len(Wishlist.wishlists_usuario(user_id)['wishlists'])
 
@@ -72,10 +83,10 @@ async def criar_wl(update: Updater, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text("😼 Eba, vamos criar uma lista de compras! 📝\nPrimeiro de tudo, preciso que você me envie o nome da wishlist.", parse_mode="HTML")
         return DAR_NOME_WL
 
+# precisa paginar a porra da listaaaaAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 async def buscar_wl(update: Updater, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.message.from_user.id
     n = update.message.from_user.first_name
-    # precisa paginar a porra da lista
 
 async def listar_wl(update: Updater, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.message.from_user.id
@@ -83,4 +94,15 @@ async def listar_wl(update: Updater, context: ContextTypes.DEFAULT_TYPE):
     # aqui não precisa paginar
     listado = Wishlist.wishlists_usuario(user_id)
     txt = Formatar.formatar_wishlists(listado)
-    await update.message.reply_text(txt, parse_mode="HTML")
+    botao = [
+    [
+        InlineKeyboardButton("➕ Adicionar", callback_data="add_itens_wl"),
+        InlineKeyboardButton("➖ Excluir", callback_data="rm_itens_wl")
+    ],
+    [
+        InlineKeyboardButton("🗑 Deletar lista", callback_data="delete_wl"),
+    ],
+    ]
+    teclado = InlineKeyboardMarkup(botao)
+
+    await update.message.reply_text(txt, parse_mode="HTML", reply_markup=teclado)
