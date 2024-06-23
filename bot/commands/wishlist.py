@@ -188,6 +188,12 @@ async def finalizar_edicao(update: Updater, context: ContextTypes.DEFAULT_TYPE):
     ids = update.message.text
 
     resposta = Wishlist.inserir_item_wishlist(user_id, context.user_data['qual_wl_add'], ids.split())
-    print(resposta)
+    
+    if resposta['code'] != 200:
+        err = ""
+        for erro in resposta['errors']:
+            err += f"{erro}\n"
+        await update.message.reply_text(f"⚠️ Operação terminada com erros:\n\n{err}\nFora esses erros, todas as outras operações foram concluídas com sucesso.")
+        await update.message.reply_text("😸 Edição concluída! ✅")
 
     return ConversationHandler.END
