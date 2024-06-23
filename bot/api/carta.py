@@ -39,7 +39,6 @@ class Carta:
         r = httpx.get(f"http://localhost:3000/carta/{carta_id}?user_id={str(user_id)}").json()
         return r
 
-    def cartas_da_obra(obra_id, pagina=1):
-        r = httpx.get(f"http://localhost:3000/carta/obra/{obra_id}?page={pagina}").json()
+    def cartas_da_obra(obra_id, user_id, pagina=1):
+        r = httpx.get(f"http://localhost:3000/carta/obra/{obra_id}?page={pagina}&user_id={user_id}").json()
         return r
-

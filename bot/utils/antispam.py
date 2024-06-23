@@ -13,6 +13,7 @@ from requests import get
 from utils import categoria
 from api.carta import Carta
 from utils import cartas_adquiridas
+from commands.wishlist import Formatar
 from api.filtro import ColecaoFiltros
 import httpx
 import json
@@ -317,7 +318,7 @@ class ButtonHandler:
         else:
             pagina = pagina
 
-        cartas_obra = Carta.cartas_da_obra(obra_id, pagina)
+        cartas_obra = Carta.cartas_da_obra(obra_id, query.from_user.id, pagina)
         nome = obra['nome']
         cartas_que_tenho, adquiridas = cartas_adquiridas.cartas_ad(obra_id, query.from_user.id)
 
@@ -656,3 +657,59 @@ class ButtonHandler:
             teclado = InlineKeyboardMarkup(botao)
             await query.edit_message_text("Opa! Aqui temos as suas configurações do perfil.", reply_markup=teclado)
             Conta.notificar_giro(user_id, False)
+
+
+######### paginar a wl
+    async def wl_p(self, update, context: CallbackContext):
+        user_id = update.callback_query.from_user.id
+        data = update.callback_query.data.split("_")
+        query = update.callback_query
+
+        wishlist_id = data[1]
+        pagina = data[2]
+
+        if int(pagina) > 2:
+            pagina = 1
+        else:
+            pagina = pagina
+
+        resposta = get(f"http://localhost:3000/wishlist/{wishlist_id}?page={pagina}").json()
+
+        f = Formatar.formatar_lista(resposta)
+
+        botao = [
+    [
+        InlineKeyboardButton("⬅️", callback_data=f"nwla_{resposta['wishlistItems'][0]['wishlist_id']}_{resposta['page'] - 1}"),
+        InlineKeyboardButton("➡️", callback_data=f"nwlp_{resposta['wishlistItems'][0]['wishlist_id']}_{resposta['page'] + 1}")
+    ],
+    ]
+        teclado = InlineKeyboardMarkup(botao)
+
+        await query.edit_message_text(f, parse_mode="HTML", reply_markup=teclado)
+
+    async def wl_a(self, update, context: CallbackContext):
+        user_id = update.callback_query.from_user.id
+        data = update.callback_query.data.split("_")
+        query = update.callback_query
+
+        wishlist_id = data[1]
+        pagina = data[2]
+
+        if int(pagina) < 1:
+            pagina = 2
+        else:
+            pagina = pagina
+
+        resposta = get(f"http://localhost:3000/wishlist/{wishlist_id}?page={pagina}").json()
+
+        f = Formatar.formatar_lista(resposta)
+
+        botao = [
+    [
+        InlineKeyboardButton("⬅️", callback_data=f"nwla_{resposta['wishlistItems'][0]['wishlist_id']}_{resposta['page'] - 1}"),
+        InlineKeyboardButton("➡️", callback_data=f"nwlp_{resposta['wishlistItems'][0]['wishlist_id']}_{resposta['page'] + 1}")
+    ],
+    ]
+        teclado = InlineKeyboardMarkup(botao)
+
+        await query.edit_message_text(f, parse_mode="HTML", reply_markup=teclado)

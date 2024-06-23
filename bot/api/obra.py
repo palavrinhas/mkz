@@ -60,7 +60,7 @@ class Obra:
         return r
 
     def buscar_obra(obra_id):
-        r = httpx.get(f"http://localhost:3000/obra/{obra_id}").json()
+        r = httpx.get(f"http://localhost:3000/obra/{int(obra_id)}").json()
         return r
 
     def buscar_obra_nome(obra_nome, pagina=1):

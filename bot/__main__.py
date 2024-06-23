@@ -138,6 +138,8 @@ if __name__ == '__main__':
 
     application.add_handler(CallbackQueryHandler(button_handler.perfil_privado, pattern="^privar_perfil_"))
     application.add_handler(CallbackQueryHandler(button_handler.notificar, pattern="^notificar_giros_"))
+    application.add_handler(CallbackQueryHandler(button_handler.wl_p, pattern="^nwlp_"))
+    application.add_handler(CallbackQueryHandler(button_handler.wl_a, pattern="^nwla_"))
 
     application.add_handler(ConversationHandler(
         entry_points=[CallbackQueryHandler(atualizar_biografia, pattern='^atualizar_bio')],

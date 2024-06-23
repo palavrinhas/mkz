@@ -7,10 +7,10 @@ def cartas_ad(obra_id, user_id):
     cartas_adquiridas_obra = 0
     lista_adquiridas = []
     # pega as cartas da colecao kkk
-    colecao = get(f"http://localhost:3000/colecao/bruta/{user_id}").json()
+    colecao = get(f"http://localhost:3000/colecao/bruta/{int(user_id)}").json()
 
     # pega as cartas da obra xddddd
-    cartas_obra = get(f"http://localhost:3000/carta/obra/{obra_id}?paginado=false").json()['cartas']
+    cartas_obra = get(f"http://localhost:3000/carta/obra/{int(obra_id)}?paginado=false&user_id={user_id}").json()['cartas']
 
     # primeiro loop para cada carta na colecao...
     for carta_colecao in colecao:

@@ -89,20 +89,34 @@ async def criar_wl(update: Updater, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text("😼 Eba, vamos criar uma lista de compras! 📝\nPrimeiro de tudo, preciso que você me envie o nome da wishlist.", parse_mode="HTML")
         return DAR_NOME_WL
 
-# precisa paginar a porra da listaaaaAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 async def buscar_wl(update: Updater, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.message.from_user.id
     n = update.message.from_user.first_name
     if len(context.args) < 1:
         await update.message.reply_text("Você precisa me informar um ID de lista.\n\nExe.: <code>/wl 1</code>", parse_mode="HTML")
         return
-    r = Formatar.formatar_lista(Wishlist.wishlist_completa(context.args[0]))
-    await update.message.reply_text(r, parse_mode="HTML")
+    resposta = Wishlist.wishlist_completa(context.args[0])
+    if resposta['code'] == 500:
+        await update.message.reply_text("<strong>Erro</strong>: <i>Wishlist não encontrada.</i>", parse_mode="HTML")
+        return
+    r = Formatar.formatar_lista(resposta)
+
+    if resposta['totalPages'] > 1:
+        botao = [
+    [
+        InlineKeyboardButton("⬅️", callback_data=f"nwla_{resposta['wishlistItems'][0]['wishlist_id']}_{resposta['page'] - 1}"),
+        InlineKeyboardButton("➡️", callback_data=f"nwlp_{resposta['wishlistItems'][0]['wishlist_id']}_{resposta['page'] + 1}")
+    ],
+    ]
+        teclado = InlineKeyboardMarkup(botao)
+        await update.message.reply_text(r, parse_mode="HTML", reply_markup=teclado)
+    else:
+        await update.message.reply_text(r, parse_mode="HTML")
 
 async def listar_wl(update: Updater, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.message.from_user.id
     n = update.message.from_user.first_name
-    # aqui não precisa paginar
+    # aqui não precisa paginar graças a Deus 🙏🙏🙏🙏🙏🙏🙏🙏🙏🙏🙏🙏🙏🙏🙏🙏🙏🙏🙏🙏
     listado = Wishlist.wishlists_usuario(user_id)
     txt = Formatar.formatar_wishlists(listado)
     botao = [
