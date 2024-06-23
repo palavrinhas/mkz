@@ -12,8 +12,8 @@ from telegram.ext import (
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup  # noqa: F811
 
 INICIAR, DAR_NOME_WL, CARTAS_PARA_WL = range(3)
+APAGAR_WL, QUAL_WL, CONFIRMAR = range(3)
 
-infos = []
 
 class Formatar:
     def formatar_lista(json):
@@ -41,7 +41,7 @@ class Formatar:
 async def nomear_wl(update: Updater, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.message.from_user.id
     n = update.message.from_user.first_name
-    infos.append(update.message.text)
+    context.user_data['nome_wl_escolhido'] = update.message.text
     await update.message.reply_text("Nome bonito, nome formoso! Agora, me envie até 30 IDs que você esteja procurando, em formato de lista separado por espaço.\n⚠️ Mas atenção! Apenas 10 deles podem ser de pães que você já tem.")
     return CARTAS_PARA_WL
 
@@ -58,7 +58,7 @@ async def inserir_cartas_wl(update: Updater, context: ContextTypes.DEFAULT_TYPE)
             await update.message.reply_text("Tem algum ID aí que não existe. Verifique se está tudo certinho, ok? Você pode tentar novamente.")
             return ConversationHandler.END
 
-    n_id = Wishlist.criar_wishlist(user_id, infos[0])['retorno']['WishlistID']
+    n_id = Wishlist.criar_wishlist(user_id, context.user_data['nome_wl_escolhido'])['retorno']['WishlistID']
     c_inseridas = Wishlist.inserir_item_wishlist(user_id, n_id, cartas)
     await update.message.reply_text(f"😻 Wishlist criada!\n\n🆔 Wishlist ID: <code>{n_id}</code>\n🥞 Ingredientes: <code>{len(cartas)}</code>\n\nVocê pode ver os itens da lista com <code>/wl {n_id}</code>.", parse_mode="HTML")
     return ConversationHandler.END
@@ -75,7 +75,6 @@ async def criar_wl(update: Updater, context: ContextTypes.DEFAULT_TYPE):
     quantidade_wl = len(Wishlist.wishlists_usuario(user_id)['wishlists'])
 
     if premium != True and quantidade_wl >= 1:
-        print(1) # TODO: impedir de criar mais de uma lista, pois, o usuário não é premium.
         await update.message.reply_text("<i>Infelizmente, o limite de criação de wishlist é 1. Considere fazer uma pequena doação para obter até 5 wishlists!</i>", parse_mode="HTML")
         return
     elif premium and quantidade_wl == 5:
@@ -125,9 +124,41 @@ async def listar_wl(update: Updater, context: ContextTypes.DEFAULT_TYPE):
         InlineKeyboardButton("➖ Excluir", callback_data="rm_itens_wl")
     ],
     [
-        InlineKeyboardButton("🗑 Deletar lista", callback_data="delete_wl"),
+        InlineKeyboardButton("🗑 Deletar lista", callback_data="deletar_wl_"),
     ],
     ]
     teclado = InlineKeyboardMarkup(botao)
 
     await update.message.reply_text(txt, parse_mode="HTML", reply_markup=teclado)
+
+async def deletar_wl(update: Updater, context: ContextTypes.DEFAULT_TYPE):
+    query = update.callback_query
+    await query.message.reply_text("<strong>🕊 Menos uma lista!</strong>\n\nAgora, me envie o ID da lista que deseja apagar completamente.", parse_mode="HTML")
+    return QUAL_WL
+
+async def qual_wl(update: Updater, context: ContextTypes.DEFAULT_TYPE):
+    user_id = update.message.from_user.id
+    n = update.message.from_user.first_name
+    wl_id = update.message.text
+
+    r = Wishlist.wishlist_completa(wl_id)
+    if r['wishlistItems'][0]['user_id'] != user_id:
+        await update.message.reply_text("<i>Essa lista não é sua. Tente novamente :)</i>", parse_mode="HTML")
+        return ConversationHandler.END
+    else:
+        context.user_data['wl_delete'] = wl_id
+        await update.message.reply_text("<strong>⚠️ Você confirma essa ação? Ela <i>não</i> terá volta.</strong>\n\n<i>Sim</i> ou <i>Não</i>", parse_mode="HTML")
+        return CONFIRMAR
+
+async def confirmar_dl(update: Updater, context: ContextTypes.DEFAULT_TYPE):
+    user_id = update.message.from_user.id
+    n = update.message.from_user.first_name
+    confirmacao = update.message.text
+
+    if confirmacao.lower() == "sim":
+        Wishlist.deletar_wishlist(context.user_data['wl_delete'])
+        await update.message.reply_text("<strong>✅ Lista deletada com sucesso.</strong>", parse_mode="HTML")
+        return ConversationHandler.END
+    else:
+        await update.message.reply_text("<strong>❗️ Parei.</strong>\n<i>A wishlist está intacta. Ação cancelada.</i>", parse_mode="HTML")
+        return ConversationHandler.END
