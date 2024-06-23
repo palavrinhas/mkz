@@ -13,7 +13,7 @@ from telegram import InlineKeyboardButton, InlineKeyboardMarkup  # noqa: F811
 
 INICIAR, DAR_NOME_WL, CARTAS_PARA_WL = range(3)
 APAGAR_WL, QUAL_WL, CONFIRMAR = range(3)
-
+QUAL_WL_ADD, FINALIZAR = range(2)
 
 class Formatar:
     def formatar_lista(json):
@@ -120,8 +120,8 @@ async def listar_wl(update: Updater, context: ContextTypes.DEFAULT_TYPE):
     txt = Formatar.formatar_wishlists(listado)
     botao = [
     [
-        InlineKeyboardButton("➕ Adicionar", callback_data="add_itens_wl"),
-        InlineKeyboardButton("➖ Excluir", callback_data="rm_itens_wl")
+        InlineKeyboardButton("➕ Adicionar", callback_data="add_wl"),
+        InlineKeyboardButton("➖ Excluir", callback_data="rm_wl")
     ],
     [
         InlineKeyboardButton("🗑 Deletar lista", callback_data="deletar_wl_"),
@@ -162,3 +162,32 @@ async def confirmar_dl(update: Updater, context: ContextTypes.DEFAULT_TYPE):
     else:
         await update.message.reply_text("<strong>❗️ Parei.</strong>\n<i>A wishlist está intacta. Ação cancelada.</i>", parse_mode="HTML")
         return ConversationHandler.END
+
+
+async def add_itens_wl(update: Updater, context: ContextTypes.DEFAULT_TYPE):
+    query = update.callback_query
+    await query.message.reply_text("<strong>👨‍🍳 Novos ingredientes!</strong>\n\nAgora, me envie ID da lista que quer adicionar os itens.", parse_mode="HTML")
+    return QUAL_WL_ADD
+
+async def qual_wl_adicionar(update: Updater, context: ContextTypes.DEFAULT_TYPE):
+    user_id = update.message.from_user.id
+    wl_id = update.message.text
+    wl = Wishlist.wishlist_completa(wl_id)
+
+    if wl['code'] == 500 or wl['wishlistItems'][0]['user_id'] != user_id:
+        await update.message.reply_text("<i>Essa wishlist não é sua ou ela sequer existe. Tente novamente :)</i>", parse_mode="HTML")
+        return ConversationHandler.END
+    else:
+        context.user_data['qual_wl_add'] = wl_id
+        await update.message.reply_text("Certo, envie os IDs que quer adicionar:", parse_mode="HTML")
+    return FINALIZAR
+
+async def finalizar_edicao(update: Updater, context: ContextTypes.DEFAULT_TYPE):
+    query = update.callback_query
+    user_id = update.message.from_user.id
+    ids = update.message.text
+
+    resposta = Wishlist.inserir_item_wishlist(user_id, context.user_data['qual_wl_add'], ids.split())
+    print(resposta)
+
+    return ConversationHandler.END

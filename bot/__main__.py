@@ -3,7 +3,7 @@ from telegram import Update
 from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler, PrefixHandler
 from telegram.ext import Application, CallbackQueryHandler, CommandHandler, ContextTypes, MessageHandler, filters, ConversationHandler, CallbackContext
 from commands import trocar_cmd, conta, start_cmd, giro, ci, buscar_c, buscar_ob, adicionar_carta, adicionar_obra, varias_c, set_adm, editar_c, editar_ob, set_fav, obras_categoria, set_gif, ajuda, config, criar_user, wishlist
-from commands.wishlist import INICIAR, DAR_NOME_WL, CARTAS_PARA_WL, APAGAR_WL, QUAL_WL, CONFIRMAR
+from commands.wishlist import INICIAR, DAR_NOME_WL, CARTAS_PARA_WL, APAGAR_WL, QUAL_WL, CONFIRMAR, QUAL_WL_ADD, FINALIZAR
 from utils.antispam import ButtonHandler
 from api.conta import Conta
 
@@ -157,5 +157,25 @@ if __name__ == '__main__':
         },
         fallbacks=[],
     ))
+
+    ### aqui são os botões para inserir e deletar itens da wl
+    application.add_handler(ConversationHandler(
+        entry_points=[CallbackQueryHandler(wishlist.add_itens_wl, pattern='^add_wl')],
+        states={
+            QUAL_WL_ADD: [MessageHandler(filters.TEXT & ~filters.COMMAND, wishlist.qual_wl_adicionar)],
+            FINALIZAR: [MessageHandler(filters.TEXT & ~filters.COMMAND, wishlist.finalizar_edicao)]
+        },
+        fallbacks=[],
+    ))
+
+    # application.add_handler(ConversationHandler(
+    #     entry_points=[CallbackQueryHandler(wishlist.deletar_wl, pattern='^rm_wl')],
+    #     states={
+    #         QUAL_WL: [MessageHandler(filters.TEXT & ~filters.COMMAND, wishlist.qual_wl)],
+    #         CONFIRMAR: [MessageHandler(filters.TEXT & ~filters.COMMAND, wishlist.confirmar_dl)]
+    #     },
+    #     fallbacks=[],
+    # ))
+    ####
 
     application.run_polling(allowed_updates=Update.ALL_TYPES)
