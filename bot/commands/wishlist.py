@@ -14,6 +14,7 @@ from telegram import InlineKeyboardButton, InlineKeyboardMarkup  # noqa: F811
 INICIAR, DAR_NOME_WL, CARTAS_PARA_WL = range(3)
 APAGAR_WL, QUAL_WL, CONFIRMAR = range(3)
 QUAL_WL_ADD, FINALIZAR = range(2)
+QUAL_WL_DL, CONFIRMAR_DL = range(2)
 
 class Formatar:
     def formatar_lista(json):
@@ -163,7 +164,6 @@ async def confirmar_dl(update: Updater, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text("<strong>❗️ Parei.</strong>\n<i>A wishlist está intacta. Ação cancelada.</i>", parse_mode="HTML")
         return ConversationHandler.END
 
-
 async def add_itens_wl(update: Updater, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.message.reply_text("<strong>👨‍🍳 Novos ingredientes!</strong>\n\nAgora, me envie ID da lista que quer adicionar os itens.", parse_mode="HTML")
@@ -188,12 +188,44 @@ async def finalizar_edicao(update: Updater, context: ContextTypes.DEFAULT_TYPE):
     ids = update.message.text
 
     resposta = Wishlist.inserir_item_wishlist(user_id, context.user_data['qual_wl_add'], ids.split())
-    
+
     if resposta['code'] != 200:
         err = ""
         for erro in resposta['errors']:
             err += f"{erro}\n"
         await update.message.reply_text(f"⚠️ Operação terminada com erros:\n\n{err}\nFora esses erros, todas as outras operações foram concluídas com sucesso.")
         await update.message.reply_text("😸 Edição concluída! ✅")
+    else:
+        await update.message.reply_text("😸 Edição concluída! ✅")
+    return ConversationHandler.END
+
+async def qual_wl_dl(update: Updater, context: ContextTypes.DEFAULT_TYPE):
+    query = update.callback_query
+    await query.message.reply_text("<strong>👨‍🍳 Usando ingredientes!</strong>\n\nAgora, me envie ID da lista que quer remover os itens.", parse_mode="HTML")
+    return QUAL_WL_DL
+
+async def qual_wl_remover(update: Updater, context: ContextTypes.DEFAULT_TYPE):
+    user_id = update.message.from_user.id
+    wl_id = update.message.text
+    wl = Wishlist.wishlist_completa(wl_id)
+
+    if wl['code'] == 500 or wl['wishlistItems'][0]['user_id'] != user_id:
+        await update.message.reply_text("<i>Essa wishlist não é sua ou ela sequer existe. Tente novamente :)</i>", parse_mode="HTML")
+        return ConversationHandler.END
+    else:
+        context.user_data['qual_wl_rm'] = wl_id
+        await update.message.reply_text("Certo, envie os IDs que quer remover:", parse_mode="HTML")
+    return CONFIRMAR_DL
+
+async def finalizar_edicao_del(update: Updater, context: ContextTypes.DEFAULT_TYPE):
+    query = update.callback_query
+    user_id = update.message.from_user.id
+    ids = update.message.text.split()
+    print(ids)
+
+    for item in ids:
+        Wishlist.remover_item_wishlist(user_id, context.user_data['qual_wl_rm'], item)
+
+    await update.message.reply_text("😸 Edição concluída! ✅")
 
     return ConversationHandler.END
