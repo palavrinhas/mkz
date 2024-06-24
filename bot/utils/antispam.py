@@ -3,6 +3,7 @@ from telegram import Update
 import time
 from api.obra import Obra
 from api.conta import Conta
+from api.wishlist import Wishlist
 from telegram import InputMediaPhoto
 from utils.f import formatar_obras_categoria, formatar_ids
 import api.trocar as trocar_cmd
@@ -163,7 +164,6 @@ class ButtonHandler:
             await update.callback_query.edit_message_caption(novo_texto, parse_mode="HTML", reply_markup=teclado)
         elif info[1] == 0:
             pagina = faltantes_json['total_paginas']
-            print(pagina)
             falta, faltantes_json = ColecaoFiltros.possuo(user_id, info[2], pagina)
             novo_texto, img = formatar.FormatadorMensagem.formatar_filtro_possui(faltantes_json)
             botoes = [InlineKeyboardButton("⬅️", callback_data=f"possuo_anterior_{user_id}_{faltantes_json['pagina_atual'] - 1}_{info[2]}_{faltantes_json['total_paginas']}"), InlineKeyboardButton("➡️", callback_data=f"possuo_proxima_{user_id}_{faltantes_json['pagina_atual'] + 1}_{info[2]}_{faltantes_json['total_paginas']}")]
@@ -399,11 +399,11 @@ class ButtonHandler:
         quantasTem = Carta.buscar_carta(ide, int(query.from_user.id))['quantidade_acumulada']
         txt = f"""<i>🛎 Pedido entregue! Aqui está:</i>\n\n<code>{carta[0]["ID"]}</code>. <strong>{carta[0]["nome"]}</strong> — {obra["nome"]}\n\n(<code>{quantasTem}x</code>)"""
         await query.edit_message_media(media=InputMediaPhoto(media=carta[0]["imagem"], caption=txt, parse_mode="HTML"))
+        Wishlist.remover_geral(ide, query.from_user.id)
 
     @apply_anti_spam
     async def botao_de_sorteio(self, update, context: CallbackContext) -> None:
         query = update.callback_query
-        print(query.data)
         match query.data:
             case "Sortear_Filme":
                 obras, botoes = Obra.sortear_obras(1)
@@ -429,14 +429,13 @@ class ButtonHandler:
                 obras, botoes = Obra.sortear_obras(6)
                 teclado = InlineKeyboardMarkup(botoes)
                 await query.edit_message_caption(caption=f"🤔 Prateleira à mostra! Por favor, confirme qual produto você procura nesta seção.\n\n{obras}", reply_markup=teclado)
-        
+
     @apply_anti_spam
     async def aceitar_pedido_gif(self, update, context: CallbackContext):
         user_id = update.callback_query.from_user.id
         data = update.callback_query.data.split("_")
         query = update.callback_query
         pedido_aceito = data[2]
-        print(pedido_aceito)
 
         msg = Conta.aceitar_pedido_gif(pedido_aceito)
 
@@ -456,7 +455,6 @@ class ButtonHandler:
         user_id = update.callback_query.from_user.id
         data = update.callback_query.data.split("_")
         query = update.callback_query
-        print(data)
 
         pagina = int(data[2])
         obra = int(data[3])
@@ -468,7 +466,6 @@ class ButtonHandler:
             pagina = pagina
 
         cartas_obra = httpx.get(f"http://localhost:3000/carta/obra/imagem/{obra}?paginado=true&user_id={usuario}&page={pagina}").json()
-        print(cartas_obra)
 
         botoes = [
                 InlineKeyboardButton("⬅️", callback_data=f"anterior_imagem_{pagina - 1}_{obra}_{usuario}"), InlineKeyboardButton("➡️", callback_data=f"proxima_imagem_{pagina + 1}_{obra}_{usuario}")

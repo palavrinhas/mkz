@@ -1,6 +1,12 @@
 import httpx
 
 class Wishlist:
+    def remover_geral(ide, user_id):
+        listas = httpx.get(f"http://localhost:3000/wishlists/{user_id}/").json()['wishlists']
+        for lista in listas:
+            r = httpx.get(f"http://localhost:3000/remover/wl/{lista['WishlistID']}/{user_id}/{ide}").json()
+        return True
+
     def criar_wishlist(user_id, nome="meu cativeiro!"):
         header = {"Content-type":"application/json"}
         js = {"nome":str(nome)}
