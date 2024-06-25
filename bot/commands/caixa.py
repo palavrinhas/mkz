@@ -5,6 +5,7 @@ from telegram.ext import Updater, ContextTypes
 # 4. Loja
 # 4.1 A partir do comando /caixa ele escolhe entre os seguintes botões*:
 # Devolução | Compra de Pedidos | Presentear | Ingredientes na Vitrine
+
 # 4.2 Devolução = Venda de cartas.
 # “Não gostou de um ingrediente? A padoca aceita devolução! Envie aqui a lista de IDs dos ingredientes que deseja devolver. Você pode devolver até 10 ingredientes de uma vez, e cada um deles vale uma moeda.”
 # O comando deve:
@@ -39,5 +40,19 @@ from telegram.ext import Updater, ContextTypes
 #     → Remover 5 moedas da conta;
 #     → Adicionar aquela carta pra coleção.
 
+# retorna a mensagem de loja
 async def atendente(update: Updater, context: ContextTypes.DEFAULT_TYPE):
+    return
+
+# pergunta quais cartas quer remover
+async def iniciar_devolucao(update: Updater, context: ContextTypes.DEFAULT_TYPE):
+    return
+
+# confirma se as cartas sao da pessoa
+# manda uma msg de confirmacao para remover
+async def confirmar_devolucao(update: Updater, context: ContextTypes.DEFAULT_TYPE):
+    return
+
+# passando do outro, ele remove e da as moedas, enviando quantas ganhou e quantas tem agora
+async def devolver(update: Updater, context: ContextTypes.DEFAULT_TYPE):
     return

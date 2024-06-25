@@ -103,6 +103,7 @@ if __name__ == '__main__':
     application.add_handler(set_fav_handler)
     application.add_handler(criar_wl_handler)
     application.add_handler(buscar_wl_handler)
+    application.add_handler(caixa_handler)
 
     application.add_handler(CallbackQueryHandler(button_handler.pagina_obras_proxima, pattern="^proxima_search_obras_"))
     application.add_handler(CallbackQueryHandler(button_handler.pagina_obras_anterior, pattern="^anterior_search_obras_"))
