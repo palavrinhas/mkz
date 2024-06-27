@@ -1,11 +1,13 @@
 from api.conta import Conta
 from api.carta import Carta
+from utils.formatar import emoji
 from telegram.ext import Updater, ContextTypes
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from collections import Counter
 from telegram.ext import  MessageHandler, filters, ConversationHandler, CallbackContext
+from utils.antispam import ButtonHandler
 
-VERIFICAR = range(1)
+VERIFICAR, CONFIRMO, DEVOLVER  = range(3)
 
 # 4. Loja
 # 4.1 A partir do comando /caixa ele escolhe entre os seguintes botões*:
@@ -46,8 +48,15 @@ VERIFICAR = range(1)
 #     → Adicionar aquela carta pra coleção.
 
 class FormatarMSG:
-    def confirmar(json):
-        return True
+    def confirmar(user_id, json):
+        cartas = "Cartas para serem removidas:\n"
+        for item in json:
+            carta = Carta.buscar_carta(int(item), int(user_id))
+            print(carta)
+            emoji_ = emoji(carta['carta']['categoria'])
+            cartas += f"{emoji_} <code>{carta['carta']['ID']}</code>. <strong>{carta['carta']['nome']}</strong> - <i>{carta['carta']['obra_nome']}</i>\n"
+        msg = f"""{cartas}\nVocê tem certeza?"""
+        return msg
 
 async def atendente(update: Updater, context: ContextTypes.DEFAULT_TYPE):
     if update.message.chat.type != "private":
@@ -96,14 +105,21 @@ async def confirmar_devolucao(update: Updater, context: ContextTypes.DEFAULT_TYP
     if len(itens) > 10:
         await update.message.reply_text("Você pode enviar apenas 10 itens por venda. Ação cancelada.")
         return ConversationHandler.END
-    for item in lista:
+    for item in itens:
         r = Carta.buscar_carta(int(item), int(update.message.from_user.id))
-        if r['acumulado'] < 1:
+        if r['quantidade_acumulada'] < 1:
             await update.message.reply_text(f"Erro: Você não possui o ingrediente ID {item}. Ação cancelada.")
             return ConversationHandler.END
+
+    mensagem = FormatarMSG.confirmar(update.message.from_user.id, itens)
+    await update.message.reply_text(mensagem, parse_mode="HTML")
     return DEVOLVER
 
 # passando do outro, ele remove e da as moedas, enviando quantas ganhou e quantas tem agora
 async def devolver(update: Updater, context: ContextTypes.DEFAULT_TYPE):
-    print("nao cara, pode crer, vou remover aqui e te dou essas migalhas aq pdp?")
-    return
+    if update.message.text.lower == "sim":
+        print("vender tudo nessa porra")
+        return ConversationHandler.END
+    else:
+        await update.message.reply_text(f"⚠ Ação cancelada.", parse_mode="HTML")
+        return ConversationHandler.END
