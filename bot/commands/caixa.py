@@ -10,14 +10,6 @@ from utils.antispam import ButtonHandler
 VERIFICAR, CONFIRMO, DEVOLVER  = range(3)
 CONFIRMAR_COMPRA_GIRO, CONFIRMAR_COMPRA_GIRO = range(2)
 
-# 4. Loja
-# 4.1 A partir do comando /caixa ele escolhe entre os seguintes botões*:
-# Devolução | Compra de Pedidos | Presentear | Ingredientes na Vitrine
-
-# 4.3 Para a Compra de Pedidos (giros), o bot vai exibir que cada Pedido Novo custa 5 moedas, exibir quantas ela tem e perguntar se ele confirma a compra. A partir disso:
-#     → Ele remove a quantidade de moedas da conta;
-#     → Depois adiciona 1 giro para a conta.
-
 # 4.4 Presentear = Retirar uma carta da conta do usuário e enviar para outro.
 # O comando deve:
 #     → Receber o ID inserido pelo usuário;
