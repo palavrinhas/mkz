@@ -99,3 +99,6 @@ class Conta:
         js = {"bio":texto}
         r = httpx.post(f"http://localhost:3000/bio/{conta}", headers=h, json=js).json()
         return r
+    
+    def devolucao(lista):
+        return True

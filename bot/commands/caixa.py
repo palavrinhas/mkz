@@ -1,7 +1,11 @@
 from api.conta import Conta
-from api.obra import Obra
+from api.carta import Carta
 from telegram.ext import Updater, ContextTypes
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
+from collections import Counter
+from telegram.ext import  MessageHandler, filters, ConversationHandler, CallbackContext
+
+VERIFICAR = range(1)
 
 # 4. Loja
 # 4.1 A partir do comando /caixa ele escolhe entre os seguintes botões*:
@@ -41,15 +45,22 @@ from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 #     → Remover 5 moedas da conta;
 #     → Adicionar aquela carta pra coleção.
 
-# retorna a mensagem de loja
+class FormatarMSG:
+    def confirmar(json):
+        return True
+
 async def atendente(update: Updater, context: ContextTypes.DEFAULT_TYPE):
-    mensagem = """
+    if update.message.chat.type != "private":
+        await update.message.reply_text("<strong>Esse comando é somente utilizável no privado.</strong>", parse_mode="HTML")
+        return
+    else:
+        mensagem = """
 Opa! Aqui é o caixa!
 
 O que gostaria de realizar?
     """
 
-    botao = [
+        botao = [
     [
         InlineKeyboardButton("🔄 Devolução", callback_data="iniciar_devolucao")
     ],
@@ -64,21 +75,33 @@ O que gostaria de realizar?
     ]
     ]
 
-    teclado = InlineKeyboardMarkup(botao)
-    photo = "https://i.pinimg.com/originals/f2/82/08/f28208cdccf656bd4b800d065863c7e3.jpg"
-    await update.message.reply_photo(photo, caption=mensagem, reply_markup=teclado)
+        teclado = InlineKeyboardMarkup(botao)
+        photo = "https://i.pinimg.com/originals/f2/82/08/f28208cdccf656bd4b800d065863c7e3.jpg"
+        await update.message.reply_photo(photo, caption=mensagem, reply_markup=teclado)
 
 # pergunta quais cartas quer remover
 async def iniciar_devolucao(update: Updater, context: ContextTypes.DEFAULT_TYPE):
-    print("Blz pae, quais cartas?")
-    return
+    await update.callback_query.message.reply_text("➖ <strong>Não gostou de um ingrediente? A padoca aceita devolução!</strong>\nEnvie aqui a lista de IDs dos ingredientes que deseja devolver. Você pode devolver até <strong>10 ingredientes <i>de uma vez</i></strong>, e cada um deles vale <strong>1 moeda.</strong> 🪙", parse_mode="HTML")
+    return VERIFICAR
 
-# confirma se as cartas sao da pessoa
-# manda uma msg de confirmacao para remover
+# confirma se as cartas sao da pessoa & se tem somente 10 cartas
 async def confirmar_devolucao(update: Updater, context: ContextTypes.DEFAULT_TYPE):
-    # sim -> print("blz cara mas nao tem uma carta ai que nao ta na tua conta nao kkk melhore pf")
-    # nao -> print("blz, bora, la, so confirma para mim se ta tudo ok.")
-    return
+    itens = update.message.text.split()
+    context.user_data['cartas_vendidas'] = itens
+    contador = Counter(itens)
+
+    if any(contador[elemento] > 1 for elemento in contador):
+        await update.message.reply_text("Você não pode repetir itens da lista. Ação cancelada.")
+        return ConversationHandler.END
+    if len(itens) > 10:
+        await update.message.reply_text("Você pode enviar apenas 10 itens por venda. Ação cancelada.")
+        return ConversationHandler.END
+    for item in lista:
+        r = Carta.buscar_carta(int(item), int(update.message.from_user.id))
+        if r['acumulado'] < 1:
+            await update.message.reply_text(f"Erro: Você não possui o ingrediente ID {item}. Ação cancelada.")
+            return ConversationHandler.END
+    return DEVOLVER
 
 # passando do outro, ele remove e da as moedas, enviando quantas ganhou e quantas tem agora
 async def devolver(update: Updater, context: ContextTypes.DEFAULT_TYPE):
