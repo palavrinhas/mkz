@@ -100,5 +100,12 @@ class Conta:
         r = httpx.post(f"http://localhost:3000/bio/{conta}", headers=h, json=js).json()
         return r
     
-    def devolucao(lista):
-        return True
+    def add_moedas(user_id, quantidade):
+        r = httpx.get(f"http://localhost:3000/moeda/?tipo=adicionar&quantidade={quantidade}&usuario={user_id}").json()
+        print(r)
+        return r
+
+    def rm_moedas(user_id, quantidade):
+        r = httpx.get(f"http://localhost:3000/moeda/?tipo=remover&quantidade={quantidade}&usuario={user_id}").json()
+        print(r)
+        return r

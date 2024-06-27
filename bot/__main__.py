@@ -4,7 +4,7 @@ from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler, Prefi
 from telegram.ext import Application, CallbackQueryHandler, CommandHandler, ContextTypes, MessageHandler, filters, ConversationHandler, CallbackContext
 from commands import trocar_cmd, conta, start_cmd, giro, ci, buscar_c, buscar_ob, adicionar_carta, adicionar_obra, varias_c, set_adm, editar_c, editar_ob, set_fav, obras_categoria, set_gif, ajuda, config, criar_user, wishlist, caixa
 from commands.wishlist import INICIAR, DAR_NOME_WL, CARTAS_PARA_WL, APAGAR_WL, QUAL_WL, CONFIRMAR, QUAL_WL_ADD, FINALIZAR, QUAL_WL_DL, CONFIRMAR_DL
-from commands.caixa import VERIFICAR, CONFIRMO
+from commands.caixa import VERIFICAR, CONFIRMO, DEVOLVER
 from utils.antispam import ButtonHandler
 from api.conta import Conta
 
@@ -143,6 +143,8 @@ if __name__ == '__main__':
     application.add_handler(CallbackQueryHandler(button_handler.wl_p, pattern="^nwlp_"))
     application.add_handler(CallbackQueryHandler(button_handler.wl_a, pattern="^nwla_"))
 
+    # adquirir_pedidos
+
     application.add_handler(ConversationHandler(
         entry_points=[CallbackQueryHandler(atualizar_biografia, pattern='^atualizar_bio')],
         states={
@@ -187,7 +189,7 @@ if __name__ == '__main__':
         states={
             VERIFICAR: [MessageHandler(filters.TEXT & ~filters.COMMAND, caixa.confirmar_devolucao)],
             CONFIRMO: [MessageHandler(filters.TEXT, caixa.devolver)],
-            DEVOLVER: []
+            DEVOLVER: [MessageHandler(filters.TEXT, caixa.devolver)]
         },
         fallbacks=[],
     ))

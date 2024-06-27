@@ -13,15 +13,6 @@ VERIFICAR, CONFIRMO, DEVOLVER  = range(3)
 # 4.1 A partir do comando /caixa ele escolhe entre os seguintes botões*:
 # Devolução | Compra de Pedidos | Presentear | Ingredientes na Vitrine
 
-# 4.2 Devolução = Venda de cartas.
-# “Não gostou de um ingrediente? A padoca aceita devolução! Envie aqui a lista de IDs dos ingredientes que deseja devolver. Você pode devolver até 10 ingredientes de uma vez, e cada um deles vale uma moeda.”
-# O comando deve:
-#     → Aceitar somente até 10 IDs para a venda;
-#     → Checar se o usuário possui os IDs fornecidos;
-#     → Remover as cartas da conta;
-#     → Adicionar dinheiro para a conta, equivalente a quantidade de cartas removidas;
-# → Após o procedimento, aceitar um novo requisito de venda somente após 30 segundos.
-
 # 4.3 Para a Compra de Pedidos (giros), o bot vai exibir que cada Pedido Novo custa 5 moedas, exibir quantas ela tem e perguntar se ele confirma a compra. A partir disso:
 #     → Ele remove a quantidade de moedas da conta;
 #     → Depois adiciona 1 giro para a conta.
@@ -55,7 +46,7 @@ class FormatarMSG:
             print(carta)
             emoji_ = emoji(carta['carta']['categoria'])
             cartas += f"{emoji_} <code>{carta['carta']['ID']}</code>. <strong>{carta['carta']['nome']}</strong> - <i>{carta['carta']['obra_nome']}</i>\n"
-        msg = f"""{cartas}\nVocê tem certeza?"""
+        msg = f"""{cartas}\nVocê tem certeza?\n\nSim ou Não?"""
         return msg
 
 async def atendente(update: Updater, context: ContextTypes.DEFAULT_TYPE):
@@ -117,9 +108,13 @@ async def confirmar_devolucao(update: Updater, context: ContextTypes.DEFAULT_TYP
 
 # passando do outro, ele remove e da as moedas, enviando quantas ganhou e quantas tem agora
 async def devolver(update: Updater, context: ContextTypes.DEFAULT_TYPE):
-    if update.message.text.lower == "sim":
-        print("vender tudo nessa porra")
+    if update.message.text.lower() == "sim":
+        moedas = len(context.user_data['cartas_vendidas'])
+        m = Conta.add_moedas(update.message.from_user.id, moedas)['usuario']['moedas']
+        for item in context.user_data['cartas_vendidas']:
+            Conta.remover_carta_colecao(int(update.message.from_user.id), int(item))
+        await update.message.reply_text(f"Show de bola! Ação concluída com sucesso.\n\nAgora você tem {m} moeda(s).")
         return ConversationHandler.END
     else:
-        await update.message.reply_text(f"⚠ Ação cancelada.", parse_mode="HTML")
+        await update.message.reply_text(f"⚠ Ação cancelada. Nada ocorreu!", parse_mode="HTML")
         return ConversationHandler.END
