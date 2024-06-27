@@ -143,8 +143,6 @@ if __name__ == '__main__':
     application.add_handler(CallbackQueryHandler(button_handler.wl_p, pattern="^nwlp_"))
     application.add_handler(CallbackQueryHandler(button_handler.wl_a, pattern="^nwla_"))
 
-    # adquirir_pedidos
-
     application.add_handler(ConversationHandler(
         entry_points=[CallbackQueryHandler(atualizar_biografia, pattern='^atualizar_bio')],
         states={
@@ -167,6 +165,14 @@ if __name__ == '__main__':
         states={
             QUAL_WL_ADD: [MessageHandler(filters.TEXT & ~filters.COMMAND, wishlist.qual_wl_adicionar)],
             FINALIZAR: [MessageHandler(filters.TEXT & ~filters.COMMAND, wishlist.finalizar_edicao)]
+        },
+        fallbacks=[],
+    ))
+
+    application.add_handler(ConversationHandler(
+        entry_points=[CallbackQueryHandler(caixa.comprar_pedidos, pattern='^adquirir_pedidos')],
+        states={
+            CONFIRMAR_COMPRA_GIRO: [MessageHandler(filters.TEXT, caixa.confirmar_compra_giro)],
         },
         fallbacks=[],
     ))

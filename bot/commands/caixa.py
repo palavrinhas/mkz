@@ -8,6 +8,7 @@ from telegram.ext import  MessageHandler, filters, ConversationHandler, Callback
 from utils.antispam import ButtonHandler
 
 VERIFICAR, CONFIRMO, DEVOLVER  = range(3)
+CONFIRMAR_COMPRA_GIRO = range(1)
 
 # 4. Loja
 # 4.1 A partir do comando /caixa ele escolhe entre os seguintes botões*:
@@ -118,3 +119,15 @@ async def devolver(update: Updater, context: ContextTypes.DEFAULT_TYPE):
     else:
         await update.message.reply_text(f"⚠ Ação cancelada. Nada ocorreu!", parse_mode="HTML")
         return ConversationHandler.END
+
+async def comprar_pedidos(update: Updater, context: ContextTypes.DEFAULT_TYPE):
+    moedas = Conta.buscar_usuario(update.message.from_user.id)
+    if moedas['moedas'] < 5:
+        await update.message.reply_text("Você não tem moedas suficientes para comprar um pedido. Considere vender cartas para adquirir mais moedas!")
+        return ConversationHandler.END
+    else:
+        return CONFIRMAR_COMPRA_GIRO
+
+async def confirmar_compra_giro(update: Updater, context: ContextTypes.DEFAULT_TYPE):
+    
+    return ConversationHandler.END
