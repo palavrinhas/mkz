@@ -8,7 +8,7 @@ from telegram.ext import  MessageHandler, filters, ConversationHandler, Callback
 from utils.antispam import ButtonHandler
 
 VERIFICAR, CONFIRMO, DEVOLVER  = range(3)
-CONFIRMAR_COMPRA_GIRO = range(1)
+CONFIRMAR_COMPRA_GIRO, CONFIRMAR_COMPRA_GIRO = range(2)
 
 # 4. Loja
 # 4.1 A partir do comando /caixa ele escolhe entre os seguintes botões*:
@@ -121,13 +121,22 @@ async def devolver(update: Updater, context: ContextTypes.DEFAULT_TYPE):
         return ConversationHandler.END
 
 async def comprar_pedidos(update: Updater, context: ContextTypes.DEFAULT_TYPE):
-    moedas = Conta.buscar_usuario(update.message.from_user.id)
+    moedas = Conta.buscar_usuario(update.callback_query.from_user.id)
     if moedas['moedas'] < 5:
         await update.message.reply_text("Você não tem moedas suficientes para comprar um pedido. Considere vender cartas para adquirir mais moedas!")
         return ConversationHandler.END
     else:
+        context.user_data['usuario'] = update.callback_query.from_user.id
+        await update.callback_query.message.reply_text(f"Você tem certeza que deseja comprar o pedido?\n\nVocê ficará com {moedas['giros'] + 1} giros e {moedas['moedas'] - 5} moeda(s).\nSim ou Não?")
         return CONFIRMAR_COMPRA_GIRO
 
-async def confirmar_compra_giro(update: Updater, context: ContextTypes.DEFAULT_TYPE):
-    
-    return ConversationHandler.END
+async def finalizar_compra_giro(update: Updater, context: ContextTypes.DEFAULT_TYPE):
+    if update.message.text.lower() == "sim":
+        Conta.rm_moedas(update.message.from_user.id, 5)
+        Conta.inserir_giros(update.message.from_user.id, 1)
+        giros_agora = Conta.buscar_usuario(update.message.from_user.id)['giros']
+        await update.message.reply_text(f"✅ Compra realizada com sucesso.\nGiros: {giros_agora}")
+        return ConversationHandler.END
+    else:
+        await update.message.reply_text("⚠ Ação cancelada. Não ocorreu nenhuma mudança.")
+        return ConversationHandler.END

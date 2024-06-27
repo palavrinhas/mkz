@@ -4,7 +4,7 @@ from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler, Prefi
 from telegram.ext import Application, CallbackQueryHandler, CommandHandler, ContextTypes, MessageHandler, filters, ConversationHandler, CallbackContext
 from commands import trocar_cmd, conta, start_cmd, giro, ci, buscar_c, buscar_ob, adicionar_carta, adicionar_obra, varias_c, set_adm, editar_c, editar_ob, set_fav, obras_categoria, set_gif, ajuda, config, criar_user, wishlist, caixa
 from commands.wishlist import INICIAR, DAR_NOME_WL, CARTAS_PARA_WL, APAGAR_WL, QUAL_WL, CONFIRMAR, QUAL_WL_ADD, FINALIZAR, QUAL_WL_DL, CONFIRMAR_DL
-from commands.caixa import VERIFICAR, CONFIRMO, DEVOLVER
+from commands.caixa import VERIFICAR, CONFIRMO, DEVOLVER, CONFIRMAR_COMPRA_GIRO
 from utils.antispam import ButtonHandler
 from api.conta import Conta
 
@@ -172,7 +172,7 @@ if __name__ == '__main__':
     application.add_handler(ConversationHandler(
         entry_points=[CallbackQueryHandler(caixa.comprar_pedidos, pattern='^adquirir_pedidos')],
         states={
-            CONFIRMAR_COMPRA_GIRO: [MessageHandler(filters.TEXT, caixa.confirmar_compra_giro)],
+            CONFIRMAR_COMPRA_GIRO: [MessageHandler(filters.TEXT, caixa.finalizar_compra_giro)],
         },
         fallbacks=[],
     ))
@@ -186,7 +186,6 @@ if __name__ == '__main__':
         fallbacks=[],
     ))
 
-    
     
 
 ########################################## handlers da loja (FINALMENTE. *sticker de fogos*)
@@ -200,31 +199,31 @@ if __name__ == '__main__':
         fallbacks=[],
     ))
 
-    application.add_handler(ConversationHandler(
-        entry_points=[CallbackQueryHandler(wishlist.qual_wl_dl, pattern='^rm_wl')],
-        states={
-            QUAL_WL_DL: [MessageHandler(filters.TEXT & ~filters.COMMAND, wishlist.qual_wl_remover)],
-            CONFIRMAR_DL: [MessageHandler(filters.TEXT & ~filters.COMMAND, wishlist.finalizar_edicao_del)]
-        },
-        fallbacks=[],
-    ))
+    # application.add_handler(ConversationHandler(
+    #     entry_points=[CallbackQueryHandler(wishlist.qual_wl_dl, pattern='^rm_wl')],
+    #     states={
+    #         QUAL_WL_DL: [MessageHandler(filters.TEXT & ~filters.COMMAND, wishlist.qual_wl_remover)],
+    #         CONFIRMAR_DL: [MessageHandler(filters.TEXT & ~filters.COMMAND, wishlist.finalizar_edicao_del)]
+    #     },
+    #     fallbacks=[],
+    # ))
 
-    application.add_handler(ConversationHandler(
-        entry_points=[CallbackQueryHandler(wishlist.qual_wl_dl, pattern='^rm_wl')],
-        states={
-            QUAL_WL_DL: [MessageHandler(filters.TEXT & ~filters.COMMAND, wishlist.qual_wl_remover)],
-            CONFIRMAR_DL: [MessageHandler(filters.TEXT & ~filters.COMMAND, wishlist.finalizar_edicao_del)]
-        },
-        fallbacks=[],
-    ))
+    # application.add_handler(ConversationHandler(
+    #     entry_points=[CallbackQueryHandler(wishlist.qual_wl_dl, pattern='^rm_wl')],
+    #     states={
+    #         QUAL_WL_DL: [MessageHandler(filters.TEXT & ~filters.COMMAND, wishlist.qual_wl_remover)],
+    #         CONFIRMAR_DL: [MessageHandler(filters.TEXT & ~filters.COMMAND, wishlist.finalizar_edicao_del)]
+    #     },
+    #     fallbacks=[],
+    # ))
 
-    application.add_handler(ConversationHandler(
-        entry_points=[CallbackQueryHandler(wishlist.qual_wl_dl, pattern='^rm_wl')],
-        states={
-            QUAL_WL_DL: [MessageHandler(filters.TEXT & ~filters.COMMAND, wishlist.qual_wl_remover)],
-            CONFIRMAR_DL: [MessageHandler(filters.TEXT & ~filters.COMMAND, wishlist.finalizar_edicao_del)]
-        },
-        fallbacks=[],
-    ))
+    # application.add_handler(ConversationHandler(
+    #     entry_points=[CallbackQueryHandler(wishlist.qual_wl_dl, pattern='^rm_wl')],
+    #     states={
+    #         QUAL_WL_DL: [MessageHandler(filters.TEXT & ~filters.COMMAND, wishlist.qual_wl_remover)],
+    #         CONFIRMAR_DL: [MessageHandler(filters.TEXT & ~filters.COMMAND, wishlist.finalizar_edicao_del)]
+    #     },
+    #     fallbacks=[],
+    # ))
 
     application.run_polling(allowed_updates=Update.ALL_TYPES)
