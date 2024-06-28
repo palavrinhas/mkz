@@ -177,7 +177,7 @@ async def skip_mensagem(update: Updater, context: ContextTypes.DEFAULT_TYPE):
     return RECEBER_CONFIRMACAO_PRESENTE
 
 async def confirmar_presente(update: Updater, context: ContextTypes.DEFAULT_TYPE):
-    if context.user_data["mensagem"] == "":
+    if context.user_data["mensagem"]:
         context.user_data['mensagem'] == "Não informada."
     msg_confirma = f"""
 <strong>Até agora, essas são as informações:</strong>
