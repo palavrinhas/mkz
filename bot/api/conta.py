@@ -116,8 +116,8 @@ class Conta:
         retorno = f"""
 💝 Eba! Um usuário te mandou um presente:
 
-{carta['carta']['ID']}. {carta['carta']['nome']} - {carta['carta']['obra_nome']}
+🎁 {carta['carta']['ID']}. {carta['carta']['nome']} - {carta['carta']['obra_nome']}
 
-
+Mensagem: {mensagem}
         """
         return retorno
