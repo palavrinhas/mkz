@@ -202,7 +202,7 @@ if __name__ == '__main__':
         entry_points=[CallbackQueryHandler(caixa.iniciar_presente, pattern='^presentear')],
         states={
             RECEBER_ID_PRESENTEADO: [MessageHandler(filters.TEXT & ~filters.COMMAND, caixa.receber_id_presenteado)],
-            RECEBER_MSG_PRESENTE: [MessageHandler(filters.TEXT & ~filters.COMMAND, caixa.receber_msg_presenteado), CommandHandler('skip', caixa.skip_mensagem)],
+            RECEBER_MSG_PRESENTE: [MessageHandler(filters.TEXT, caixa.receber_msg_presenteado), CommandHandler('skip', caixa.skip_mensagem)],
             RECEBER_CONFIRMACAO_PRESENTE: [MessageHandler(filters.TEXT, caixa.confirmar_presente)]
         },
         fallbacks=[],

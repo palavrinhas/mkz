@@ -166,12 +166,14 @@ async def receber_id_presenteado(update: Updater, context: ContextTypes.DEFAULT_
         return ConversationHandler.END
 
 async def receber_msg_presenteado(update: Updater, context: ContextTypes.DEFAULT_TYPE):
+    context.user_data['presente_id'] = update.message.text
     await update.message.reply_text("✨ Você quer incluir uma mensagem para o destinatário? Se sim, envie a mensagem - se não, dê /skip. Use sua criatividade!")
     return RECEBER_CONFIRMACAO_PRESENTE
 
 # pula a fase de mandar uma mensagem com (/skip)
 async def skip_mensagem(update: Updater, context: ContextTypes.DEFAULT_TYPE):
-    context.user_data['mensagem'] = "Mensagem não informada."
+    context.user_data["mensagem"] = "Mensagem não informada."
+    print(context.user_data)
     return RECEBER_CONFIRMACAO_PRESENTE
 
 async def confirmar_presente(update: Updater, context: ContextTypes.DEFAULT_TYPE):
@@ -187,5 +189,5 @@ Você confirma o envio?
     await update.message.reply_text(msg_confirma, parse_mode="HTML")
     return CONFIRMA_22_BOLSONARO
 
-async def confirmar_presente(update: Updater, context: ContextTypes.DEFAULT_TYPE):
+async def confirmar(update: Updater, context: ContextTypes.DEFAULT_TYPE):
     return ConversationHandler.END
