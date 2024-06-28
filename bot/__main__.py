@@ -186,7 +186,6 @@ if __name__ == '__main__':
         fallbacks=[],
     ))
 
-    
 
 ########################################## handlers da loja (FINALMENTE. *sticker de fogos*)
     application.add_handler(ConversationHandler(
@@ -199,14 +198,14 @@ if __name__ == '__main__':
         fallbacks=[],
     ))
 
-    # application.add_handler(ConversationHandler(
-    #     entry_points=[CallbackQueryHandler(wishlist.qual_wl_dl, pattern='^rm_wl')],
-    #     states={
-    #         QUAL_WL_DL: [MessageHandler(filters.TEXT & ~filters.COMMAND, wishlist.qual_wl_remover)],
-    #         CONFIRMAR_DL: [MessageHandler(filters.TEXT & ~filters.COMMAND, wishlist.finalizar_edicao_del)]
-    #     },
-    #     fallbacks=[],
-    # ))
+    application.add_handler(ConversationHandler(
+        entry_points=[CallbackQueryHandler(caixa.iniciar_presente, pattern='^presentear')],
+        states={
+            RECEBER_ID_PRESENTEADO: [MessageHandler(filters.TEXT & ~filters.COMMAND, caixa.receber_id_presenteado)],
+            RECEBER_MSG_PRESENTE: [MessageHandler(filters.TEXT & ~filters.COMMAND, caixa.receber_msg_presenteado)],
+        },
+        fallbacks=[],
+    ))
 
     # application.add_handler(ConversationHandler(
     #     entry_points=[CallbackQueryHandler(wishlist.qual_wl_dl, pattern='^rm_wl')],

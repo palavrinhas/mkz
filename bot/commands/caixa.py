@@ -9,6 +9,7 @@ from utils.antispam import ButtonHandler
 
 VERIFICAR, CONFIRMO, DEVOLVER  = range(3)
 CONFIRMAR_COMPRA_GIRO, CONFIRMAR_COMPRA_GIRO = range(2)
+RECEBER_ID_PRESENTEADO = range(1)
 
 # 4.4 Presentear = Retirar uma carta da conta do usuário e enviar para outro.
 # O comando deve:
@@ -132,3 +133,21 @@ async def finalizar_compra_giro(update: Updater, context: ContextTypes.DEFAULT_T
     else:
         await update.message.reply_text("⚠ Ação cancelada. Não ocorreu nenhuma mudança.")
         return ConversationHandler.END
+
+
+# nao aguento mais meu Deus do ceu vou morre
+async def iniciar_presente(update: Updater, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text("🎁 Vamos enviar um presente! O correio já abriu e estou ansiosa para enviar as correspondências. Me diga, quem terá a sorte de ganhar um card hoje? 👀 Envie-me o ID do usuário que deseja presentear.")
+    return RECEBER_ID_PRESENTEADO
+
+async def receber_id_presenteado(update: Updater, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text("💗 Que maravilha! Pesquisei no sistema e descobri que você quer presentear [menção ao usuário], acertei? Por gentileza, me informe o ID da carta a ser entregue.")
+    return RECEBER_MSG_PRESENTE
+
+async def receber_msg_presenteado(update: Updater, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text("✨ Você quer incluir uma mensagem para o destinatário? Se sim, envie a mensagem - se não, digite NÃO. Use sua criatividade!")
+    return RECEBER_ID_PRESENTEADO
+
+async def confirmar_presente(update: Updater, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text("Até agora, estas são as informações:\n\nConfirma?")
+    return RECEBER_ID_PRESENTEADO
