@@ -6,25 +6,31 @@ from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from collections import Counter
 from telegram.ext import  MessageHandler, filters, ConversationHandler, CallbackContext
 from utils.antispam import ButtonHandler
+from requests import get
 
 VERIFICAR, CONFIRMO, DEVOLVER  = range(3)
 CONFIRMAR_COMPRA_GIRO, CONFIRMAR_COMPRA_GIRO = range(2)
-RECEBER_ID_PRESENTEADO = range(1)
+RECEBER_ID_PRESENTEADO, RECEBER_MSG_PRESENTE, RECEBER_CONFIRMACAO_PRESENTE = range(3)
 
+# não tão complexo para criar
 # 4.4 Presentear = Retirar uma carta da conta do usuário e enviar para outro.
 # O comando deve:
 #     → Receber o ID inserido pelo usuário;
 #     → Checar se o player tem essa carta;
 #        → Se False, ele retorna "Você não possui esse ingrediente no seu carrinho... Tente novamente.";
+
 #        → Caso True, ele pedirá o usuário de quem vai presentear;
 #     → Perguntar se a pessoa deseja mandar um recado junto ao presente;
 #        → Caso não queira, que envie um X. (Ou você cria um botão junto da mensagem que diz "sem recado" pro negócio dar False sozinho, o que for melhor);
 #     → Perguntar se o usuário confirma o envio do presente;
+
 #     → Remover a carta da conta;
 #     → Remover também 10 moedas;
 #     → Adicionar a carta na conta do presenteado;
 #     → Notificar o presenteado.
 
+
+### mais complexo, preciso mexer na API, deixo por último.
 # 4.5 Ingredientes na Vitrine = Cartas pra comprar.
 # Ao clicar nesse botão o bot vai:
 #     → Exibir as cartas que o bot escolheu pra estarem disponíveis;
@@ -42,6 +48,13 @@ class FormatarMSG:
             cartas += f"{emoji_} <code>{carta['carta']['ID']}</code>. <strong>{carta['carta']['nome']}</strong> - <i>{carta['carta']['obra_nome']}</i>\n"
         msg = f"""{cartas}\nVocê tem certeza?\n\nSim ou Não?"""
         return msg
+
+    def chat_info(user_id):
+        r = get(f"https://api.telegram.org/bot7051533328:AAEDAakd429GO9GtWU3MAVla7B0_lFV4b6Q/getChat?chat_id={user_id}").json()
+        if r['ok'] != True:
+            return False, "<i>Não encontrei o chat do usuário... Provavelmente ele me bloqueou :(</i>"
+        else:
+            return True, [r['result']['first_name'], r['result']['id']]
 
 async def atendente(update: Updater, context: ContextTypes.DEFAULT_TYPE):
     if update.message.chat.type != "private":
@@ -134,20 +147,45 @@ async def finalizar_compra_giro(update: Updater, context: ContextTypes.DEFAULT_T
         await update.message.reply_text("⚠ Ação cancelada. Não ocorreu nenhuma mudança.")
         return ConversationHandler.END
 
-
 # nao aguento mais meu Deus do ceu vou morre
 async def iniciar_presente(update: Updater, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("🎁 Vamos enviar um presente! O correio já abriu e estou ansiosa para enviar as correspondências. Me diga, quem terá a sorte de ganhar um card hoje? 👀 Envie-me o ID do usuário que deseja presentear.")
+    await update.callback_query.message.reply_text("🎁 Vamos enviar um presente! O correio já abriu e estou ansiosa para enviar as correspondências. Me diga, quem terá a sorte de ganhar um card hoje? 👀 Envie-me o ID do usuário que deseja presentear.")
     return RECEBER_ID_PRESENTEADO
 
 async def receber_id_presenteado(update: Updater, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("💗 Que maravilha! Pesquisei no sistema e descobri que você quer presentear [menção ao usuário], acertei? Por gentileza, me informe o ID da carta a ser entregue.")
-    return RECEBER_MSG_PRESENTE
+    existe, informacoes = FormatarMSG.chat_info(update.message.text)
+    if existe and informacoes[1] != update.message.chat.id:
+        await update.message.reply_text(f"💗 Que maravilha! Pesquisei no sistema e descobri que você quer presentear <a href='tg://user?id={informacoes[1]}'>{informacoes[0]}</a>, acertei? Por gentileza, me informe o ID da carta a ser entregue.", parse_mode="HTML")
+        context.user_data['usuario_presenteado'] = update.message.text
+        return RECEBER_MSG_PRESENTE
+    elif informacoes[1] == update.message.chat.id:
+        await update.message.reply_text("😾 <i>Espera... Você não pode enviar presentes para si mesmo!</i>", parse_mode="HTML")
+        return ConversationHandler.END
+    else:
+        await update.message.reply_text("😿 <i>Não encontrei o chat... Talvez o usuário me bloqueou.</i>", parse_mode="HTML")
+        return ConversationHandler.END
 
 async def receber_msg_presenteado(update: Updater, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("✨ Você quer incluir uma mensagem para o destinatário? Se sim, envie a mensagem - se não, digite NÃO. Use sua criatividade!")
-    return RECEBER_ID_PRESENTEADO
+    await update.message.reply_text("✨ Você quer incluir uma mensagem para o destinatário? Se sim, envie a mensagem - se não, dê /skip. Use sua criatividade!")
+    return RECEBER_CONFIRMACAO_PRESENTE
+
+# pula a fase de mandar uma mensagem com (/skip)
+async def skip_mensagem(update: Updater, context: ContextTypes.DEFAULT_TYPE):
+    context.user_data['mensagem'] = "Mensagem não informada."
+    return RECEBER_CONFIRMACAO_PRESENTE
 
 async def confirmar_presente(update: Updater, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("Até agora, estas são as informações:\n\nConfirma?")
-    return RECEBER_ID_PRESENTEADO
+    msg_confirma = f"""
+<strong>Até agora, essas são as informações:</strong>
+
+🪪 <strong>Usuário:</strong> <code>{context.user_data['usuario_presenteado']}</code>
+🎁 <strong>Presente:</strong> <code>{context.user_data['presente_id']}</code>
+📄 <strong>Mensagem:</strong> <code>{context.user_data['mensagem']}</code>
+
+Você confirma o envio?
+    """
+    await update.message.reply_text(msg_confirma, parse_mode="HTML")
+    return CONFIRMA_22_BOLSONARO
+
+async def confirmar_presente(update: Updater, context: ContextTypes.DEFAULT_TYPE):
+    return ConversationHandler.END
