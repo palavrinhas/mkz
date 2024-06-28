@@ -211,4 +211,18 @@ if __name__ == '__main__':
         fallbacks=[],
     ))
 
+    application.add_handler(ConversationHandler(
+        entry_points=[CallbackQueryHandler(caixa.iniciar_presente, pattern='^presentear')],
+        states={
+            RECEBER_ID_PRESENTEADO: [MessageHandler(filters.TEXT, caixa.receber_id_presenteado)],
+            RECEBER_MSG_PRESENTE: [
+                MessageHandler(filters.TEXT, caixa.receber_msg_presenteado),
+                CommandHandler("skip", caixa.skip_mensagem),
+            ],
+            RECEBER_CONFIRMACAO_PRESENTE: [MessageHandler(filters.TEXT, caixa.confirmar_presente)],
+            CONFIRMAR_PRESENTE: [MessageHandler(filters.TEXT, caixa.confirmar)],
+        },
+        fallbacks=[],
+    ))
+
     application.run_polling(allowed_updates=Update.ALL_TYPES)

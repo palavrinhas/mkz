@@ -191,6 +191,8 @@ async def confirmar_presente(update: Updater, context: ContextTypes.DEFAULT_TYPE
 📄 <strong>Mensagem:</strong> <code>{context.user_data['mensagem']}</code>
 
 Você confirma o envio?
+
+Sim ou Não?
     """
     await update.message.reply_text(msg_confirma, parse_mode="HTML")
     return CONFIRMAR_PRESENTE
