@@ -4,7 +4,7 @@ from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler, Prefi
 from telegram.ext import Application, CallbackQueryHandler, CommandHandler, ContextTypes, MessageHandler, filters, ConversationHandler, CallbackContext
 from commands import trocar_cmd, conta, start_cmd, giro, ci, buscar_c, buscar_ob, adicionar_carta, adicionar_obra, varias_c, set_adm, editar_c, editar_ob, set_fav, obras_categoria, set_gif, ajuda, config, criar_user, wishlist, caixa
 from commands.wishlist import INICIAR, DAR_NOME_WL, CARTAS_PARA_WL, APAGAR_WL, QUAL_WL, CONFIRMAR, QUAL_WL_ADD, FINALIZAR, QUAL_WL_DL, CONFIRMAR_DL
-from commands.caixa import VERIFICAR, CONFIRMO, DEVOLVER, CONFIRMAR_COMPRA_GIRO, RECEBER_ID_PRESENTEADO, RECEBER_MSG_PRESENTE, RECEBER_CONFIRMACAO_PRESENTE
+from commands.caixa import VERIFICAR, CONFIRMO, DEVOLVER, CONFIRMAR_COMPRA_GIRO, RECEBER_ID_PRESENTEADO, RECEBER_MSG_PRESENTE, RECEBER_CONFIRMACAO_PRESENTE, CONFIRMAR_PRESENTE
 from utils.antispam import ButtonHandler
 from api.conta import Conta
 
@@ -201,29 +201,15 @@ if __name__ == '__main__':
     application.add_handler(ConversationHandler(
         entry_points=[CallbackQueryHandler(caixa.iniciar_presente, pattern='^presentear')],
         states={
-            RECEBER_ID_PRESENTEADO: [MessageHandler(filters.TEXT & ~filters.COMMAND, caixa.receber_id_presenteado)],
-            RECEBER_MSG_PRESENTE: [MessageHandler(filters.TEXT, caixa.receber_msg_presenteado), CommandHandler('skip', caixa.skip_mensagem)],
-            RECEBER_CONFIRMACAO_PRESENTE: [MessageHandler(filters.TEXT, caixa.confirmar_presente)]
+            RECEBER_ID_PRESENTEADO: [MessageHandler(filters.TEXT, caixa.receber_id_presenteado)],
+            RECEBER_MSG_PRESENTE: [
+                MessageHandler(filters.TEXT, caixa.receber_msg_presenteado),
+                CommandHandler("skip", caixa.skip_mensagem)
+            ],
+            RECEBER_CONFIRMACAO_PRESENTE: [MessageHandler(filters.TEXT, caixa.confirmar_presente)],
+            CONFIRMAR_PRESENTE: [MessageHandler(filters.TEXT, caixa.confirmar)]
         },
         fallbacks=[],
     ))
-
-    # application.add_handler(ConversationHandler(
-    #     entry_points=[CallbackQueryHandler(wishlist.qual_wl_dl, pattern='^rm_wl')],
-    #     states={
-    #         QUAL_WL_DL: [MessageHandler(filters.TEXT & ~filters.COMMAND, wishlist.qual_wl_remover)],
-    #         CONFIRMAR_DL: [MessageHandler(filters.TEXT & ~filters.COMMAND, wishlist.finalizar_edicao_del)]
-    #     },
-    #     fallbacks=[],
-    # ))
-
-    # application.add_handler(ConversationHandler(
-    #     entry_points=[CallbackQueryHandler(wishlist.qual_wl_dl, pattern='^rm_wl')],
-    #     states={
-    #         QUAL_WL_DL: [MessageHandler(filters.TEXT & ~filters.COMMAND, wishlist.qual_wl_remover)],
-    #         CONFIRMAR_DL: [MessageHandler(filters.TEXT & ~filters.COMMAND, wishlist.finalizar_edicao_del)]
-    #     },
-    #     fallbacks=[],
-    # ))
 
     application.run_polling(allowed_updates=Update.ALL_TYPES)

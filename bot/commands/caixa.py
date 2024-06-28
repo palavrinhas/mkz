@@ -10,7 +10,7 @@ from requests import get
 
 VERIFICAR, CONFIRMO, DEVOLVER  = range(3)
 CONFIRMAR_COMPRA_GIRO, CONFIRMAR_COMPRA_GIRO = range(2)
-RECEBER_ID_PRESENTEADO, RECEBER_MSG_PRESENTE, RECEBER_CONFIRMACAO_PRESENTE = range(3)
+RECEBER_ID_PRESENTEADO, RECEBER_MSG_PRESENTE, RECEBER_CONFIRMACAO_PRESENTE, CONFIRMAR_PRESENTE = range(4)
 
 # não tão complexo para criar
 # 4.4 Presentear = Retirar uma carta da conta do usuário e enviar para outro.
@@ -147,7 +147,7 @@ async def finalizar_compra_giro(update: Updater, context: ContextTypes.DEFAULT_T
         await update.message.reply_text("⚠ Ação cancelada. Não ocorreu nenhuma mudança.")
         return ConversationHandler.END
 
-# nao aguento mais meu Deus do ceu vou morre
+# nao aguento mais meu Deus do ceu vou morrer
 async def iniciar_presente(update: Updater, context: ContextTypes.DEFAULT_TYPE):
     await update.callback_query.message.reply_text("🎁 Vamos enviar um presente! O correio já abriu e estou ansiosa para enviar as correspondências. Me diga, quem terá a sorte de ganhar um card hoje? 👀 Envie-me o ID do usuário que deseja presentear.")
     return RECEBER_ID_PRESENTEADO
@@ -172,11 +172,13 @@ async def receber_msg_presenteado(update: Updater, context: ContextTypes.DEFAULT
 
 # pula a fase de mandar uma mensagem com (/skip)
 async def skip_mensagem(update: Updater, context: ContextTypes.DEFAULT_TYPE):
-    context.user_data["mensagem"] = "Mensagem não informada."
-    print(context.user_data)
+    context.user_data["mensagem"] = "Nada informado!"
+    await update.message.reply_text("Sutil, hein? Sem problemas.")
     return RECEBER_CONFIRMACAO_PRESENTE
 
 async def confirmar_presente(update: Updater, context: ContextTypes.DEFAULT_TYPE):
+    if context.user_data["mensagem"] == "":
+        context.user_data['mensagem'] == "Não informada."
     msg_confirma = f"""
 <strong>Até agora, essas são as informações:</strong>
 
@@ -187,7 +189,8 @@ async def confirmar_presente(update: Updater, context: ContextTypes.DEFAULT_TYPE
 Você confirma o envio?
     """
     await update.message.reply_text(msg_confirma, parse_mode="HTML")
-    return CONFIRMA_22_BOLSONARO
+    return CONFIRMAR_PRESENTE
 
 async def confirmar(update: Updater, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text("💓 Presente enviado!")
     return ConversationHandler.END
