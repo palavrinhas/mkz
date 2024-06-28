@@ -118,6 +118,6 @@ class Conta:
 
 🎁 {carta['carta']['ID']}. {carta['carta']['nome']} - {carta['carta']['obra_nome']}
 
-Mensagem: {mensagem}
+💌 Mensagem: {mensagem}
         """
         return retorno

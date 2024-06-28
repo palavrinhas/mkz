@@ -131,7 +131,7 @@ async def finalizar_compra_giro(update: Updater, context: ContextTypes.DEFAULT_T
 
 # nao aguento mais meu Deus do ceu vou morrer
 async def iniciar_presente(update: Updater, context: ContextTypes.DEFAULT_TYPE):
-    usuario = Conta.buscar_usuario(update.callback_query.message.from_user.id)['moedas']
+    usuario = Conta.buscar_usuario(update.callback_query.from_user.id)['moedas']
     if usuario < 10:
         await update.message.reply_text("Você não tem moedas suficientes para realizar o presenteamento. Considere adquirir mais moedas para continuar!")
         return ConversationHandler.END
@@ -185,8 +185,8 @@ Sim ou Não?
 
 async def confirmar(update: Updater, context: ContextTypes.DEFAULT_TYPE):
     if update.message.text.lower() == "sim":
-        texto = Conta.enviar_presente(update.message.chat.id, context.user_data['usuario_presenteado'], context.user_data['presente_id'])
-        await Conta.rm_moedas(update.message.chat.id, 10)
+        texto = Conta.enviar_presente(update.message.chat.id, context.user_data['usuario_presenteado'], context.user_data['presente_id'], context.user_data['mensagem'])
+        Conta.rm_moedas(update.message.chat.id, 10)
         await update._bot.send_message(chat_id=context.user_data['usuario_presenteado'], text=texto)
         await update.message.reply_text("💓 Presente enviado!")
         return ConversationHandler.END

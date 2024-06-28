@@ -212,7 +212,7 @@ if __name__ == '__main__':
     ))
 
     application.add_handler(ConversationHandler(
-        entry_points=[CallbackQueryHandler(caixa.iniciar_presente, pattern='^presentear')],
+        entry_points=[CallbackQueryHandler(caixa.iniciar_presente, pattern='^vitrine')],
         states={
             RECEBER_ID_PRESENTEADO: [MessageHandler(filters.TEXT, caixa.receber_id_presenteado)],
             RECEBER_MSG_PRESENTE: [
