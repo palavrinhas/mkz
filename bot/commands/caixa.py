@@ -12,24 +12,6 @@ VERIFICAR, CONFIRMO, DEVOLVER  = range(3)
 CONFIRMAR_COMPRA_GIRO, CONFIRMAR_COMPRA_GIRO = range(2)
 RECEBER_ID_PRESENTEADO, RECEBER_MSG_PRESENTE, RECEBER_CONFIRMACAO_PRESENTE, CONFIRMAR_PRESENTE = range(4)
 
-# não tão complexo para criar
-# 4.4 Presentear = Retirar uma carta da conta do usuário e enviar para outro.
-# O comando deve:
-#     → Receber o ID inserido pelo usuário;
-#     → Checar se o player tem essa carta;
-#        → Se False, ele retorna "Você não possui esse ingrediente no seu carrinho... Tente novamente.";
-
-#        → Caso True, ele pedirá o usuário de quem vai presentear;
-#     → Perguntar se a pessoa deseja mandar um recado junto ao presente;
-#        → Caso não queira, que envie um X. (Ou você cria um botão junto da mensagem que diz "sem recado" pro negócio dar False sozinho, o que for melhor);
-#     → Perguntar se o usuário confirma o envio do presente;
-
-#     → Remover a carta da conta;
-#     → Remover também 10 moedas;
-#     → Adicionar a carta na conta do presenteado;
-#     → Notificar o presenteado.
-
-
 ### mais complexo, preciso mexer na API, deixo por último.
 # 4.5 Ingredientes na Vitrine = Cartas pra comprar.
 # Ao clicar nesse botão o bot vai:
@@ -149,6 +131,10 @@ async def finalizar_compra_giro(update: Updater, context: ContextTypes.DEFAULT_T
 
 # nao aguento mais meu Deus do ceu vou morrer
 async def iniciar_presente(update: Updater, context: ContextTypes.DEFAULT_TYPE):
+    usuario = Conta.buscar_usuario(update.callback_query.message.from_user.id)['moedas']
+    if usuario < 10:
+        await update.message.reply_text("Você não tem moedas suficientes para realizar o presenteamento. Considere adquirir mais moedas para continuar!")
+        return ConversationHandler.END
     await update.callback_query.message.reply_text("🎁 Vamos enviar um presente! O correio já abriu e estou ansiosa para enviar as correspondências. Me diga, quem terá a sorte de ganhar um card hoje? 👀 Envie-me o ID do usuário que deseja presentear.")
     return RECEBER_ID_PRESENTEADO
 
@@ -200,6 +186,7 @@ Sim ou Não?
 async def confirmar(update: Updater, context: ContextTypes.DEFAULT_TYPE):
     if update.message.text.lower() == "sim":
         texto = Conta.enviar_presente(update.message.chat.id, context.user_data['usuario_presenteado'], context.user_data['presente_id'])
+        await Conta.rm_moedas(update.message.chat.id, 10)
         await update._bot.send_message(chat_id=context.user_data['usuario_presenteado'], text=texto)
         await update.message.reply_text("💓 Presente enviado!")
         return ConversationHandler.END
