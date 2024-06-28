@@ -112,5 +112,12 @@ class Conta:
     def enviar_presente(remetente, destinatario, presente_id, mensagem="Não informada."):
         Conta.remover_carta_colecao(int(remetente), int(presente_id))
         Conta.adicionar_carta_colecao(int(destinatario), int(presente_id))
-        carta = Carta.buscar_carta(presente_id)        
-        return True
+        carta = Carta.buscar_carta(presente_id, destinatario)
+        retorno = f"""
+💝 Eba! Um usuário te mandou um presente:
+
+{carta['carta']['ID']}. {carta['carta']['nome']} - {carta['carta']['obra_nome']}
+
+
+        """
+        return retorno

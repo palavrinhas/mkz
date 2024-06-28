@@ -166,6 +166,9 @@ async def receber_id_presenteado(update: Updater, context: ContextTypes.DEFAULT_
         return ConversationHandler.END
 
 async def receber_msg_presenteado(update: Updater, context: ContextTypes.DEFAULT_TYPE):
+    if Conta.nao_esta_colecao(update.message.from_user.id, update.message.text):
+        await update.message.reply_text("<i>Epa! Você não tem essa carta, então não pode envia-la. Ação cancelada.</i>", parse_mode="HTML")
+        return ConversationHandler.END
     context.user_data['presente_id'] = update.message.text
     await update.message.reply_text("✨ Você quer incluir uma mensagem para o destinatário? Se sim, envie a mensagem - se não, dê /skip. Use sua criatividade!")
     return RECEBER_CONFIRMACAO_PRESENTE
@@ -194,6 +197,8 @@ Você confirma o envio?
 
 async def confirmar(update: Updater, context: ContextTypes.DEFAULT_TYPE):
     if update.message.text.lower() == "sim":
+        texto = Conta.enviar_presente(update.message.chat.id, context.user_data['usuario_presenteado'], context.user_data['presente_id'])
+        await update._bot.send_message(chat_id=context.user_data['usuario_presenteado'], text=texto)
         await update.message.reply_text("💓 Presente enviado!")
         return ConversationHandler.END
     else:
