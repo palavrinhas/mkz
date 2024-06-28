@@ -166,7 +166,7 @@ async def receber_id_presenteado(update: Updater, context: ContextTypes.DEFAULT_
         return ConversationHandler.END
 
 async def receber_msg_presenteado(update: Updater, context: ContextTypes.DEFAULT_TYPE):
-    if Conta.nao_esta_colecao(update.message.from_user.id, update.message.text):
+    if Carta.buscar_carta(int(update.message.text), int(update.message.from_user.id))['quantidade_acumulada'] < 1:
         await update.message.reply_text("<i>Epa! Você não tem essa carta, então não pode envia-la. Ação cancelada.</i>", parse_mode="HTML")
         return ConversationHandler.END
     context.user_data['presente_id'] = update.message.text
