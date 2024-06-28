@@ -1,4 +1,5 @@
 import httpx
+from api.carta import Carta
 
 class Conta:
     def usuario_existe(user_id: str) -> bool:
@@ -99,13 +100,17 @@ class Conta:
         js = {"bio":texto}
         r = httpx.post(f"http://localhost:3000/bio/{conta}", headers=h, json=js).json()
         return r
-    
+
     def add_moedas(user_id, quantidade):
         r = httpx.get(f"http://localhost:3000/moeda/?tipo=adicionar&quantidade={quantidade}&usuario={user_id}").json()
-        print(r)
         return r
 
     def rm_moedas(user_id, quantidade):
         r = httpx.get(f"http://localhost:3000/moeda/?tipo=remover&quantidade={quantidade}&usuario={user_id}").json()
-        print(r)
         return r
+
+    def enviar_presente(remetente, destinatario, presente_id, mensagem="Não informada."):
+        Conta.remover_carta_colecao(int(remetente), int(presente_id))
+        Conta.adicionar_carta_colecao(int(destinatario), int(presente_id))
+        carta = Carta.buscar_carta(presente_id)        
+        return True

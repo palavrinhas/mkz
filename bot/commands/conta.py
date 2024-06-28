@@ -57,3 +57,4 @@ async def conta_usuario(update: Updater, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_animation(link, reply_to_message_id=update.message.message_id, caption=texto, parse_mode="HTML")
     else:
         await update.message.reply_photo(photo=link, reply_to_message_id=update.message.message_id, caption=texto, parse_mode="HTML")
+

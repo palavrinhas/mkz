@@ -4,7 +4,7 @@ from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler, Prefi
 from telegram.ext import Application, CallbackQueryHandler, CommandHandler, ContextTypes, MessageHandler, filters, ConversationHandler, CallbackContext
 from commands import trocar_cmd, conta, start_cmd, giro, ci, buscar_c, buscar_ob, adicionar_carta, adicionar_obra, varias_c, set_adm, editar_c, editar_ob, set_fav, obras_categoria, set_gif, ajuda, config, criar_user, wishlist, caixa
 from commands.wishlist import INICIAR, DAR_NOME_WL, CARTAS_PARA_WL, APAGAR_WL, QUAL_WL, CONFIRMAR, QUAL_WL_ADD, FINALIZAR, QUAL_WL_DL, CONFIRMAR_DL
-from commands.caixa import VERIFICAR, CONFIRMO, DEVOLVER, CONFIRMAR_COMPRA_GIRO, RECEBER_ID_PRESENTEADO, RECEBER_MSG_PRESENTE, RECEBER_CONFIRMACAO_PRESENTE, CONFIRMAR_PRESENTE, RECEBER_CONFIRMACAO_PRESENTE_SEM_MSG
+from commands.caixa import VERIFICAR, CONFIRMO, DEVOLVER, CONFIRMAR_COMPRA_GIRO, RECEBER_ID_PRESENTEADO, RECEBER_MSG_PRESENTE, RECEBER_CONFIRMACAO_PRESENTE, CONFIRMAR_PRESENTE
 from utils.antispam import ButtonHandler
 from api.conta import Conta
 
@@ -186,7 +186,6 @@ if __name__ == '__main__':
         fallbacks=[],
     ))
 
-
 ########################################## handlers da loja (FINALMENTE. *sticker de fogos*)
     application.add_handler(ConversationHandler(
         entry_points=[CallbackQueryHandler(caixa.iniciar_devolucao, pattern='^iniciar_devolucao')],
@@ -208,7 +207,6 @@ if __name__ == '__main__':
             ],
             RECEBER_CONFIRMACAO_PRESENTE: [MessageHandler(filters.TEXT, caixa.confirmar_presente)],
             CONFIRMAR_PRESENTE: [MessageHandler(filters.TEXT, caixa.confirmar)],
-            RECEBER_CONFIRMACAO_PRESENTE_SEM_MSG: [MessageHandler(filters.TEXT, caixa.confirmar_presente_sem_msg)],
         },
         fallbacks=[],
     ))

@@ -10,7 +10,7 @@ from requests import get
 
 VERIFICAR, CONFIRMO, DEVOLVER  = range(3)
 CONFIRMAR_COMPRA_GIRO, CONFIRMAR_COMPRA_GIRO = range(2)
-RECEBER_ID_PRESENTEADO, RECEBER_MSG_PRESENTE, RECEBER_CONFIRMACAO_PRESENTE, CONFIRMAR_PRESENTE, RECEBER_CONFIRMACAO_PRESENTE_SEM_MSG = range(5)
+RECEBER_ID_PRESENTEADO, RECEBER_MSG_PRESENTE, RECEBER_CONFIRMACAO_PRESENTE, CONFIRMAR_PRESENTE = range(4)
 
 # não tão complexo para criar
 # 4.4 Presentear = Retirar uma carta da conta do usuário e enviar para outro.
@@ -172,26 +172,14 @@ async def receber_msg_presenteado(update: Updater, context: ContextTypes.DEFAULT
 
 # pula a fase de mandar uma mensagem com (/skip)
 async def skip_mensagem(update: Updater, context: ContextTypes.DEFAULT_TYPE):
-    context.user_data['mensagem'] = "Não informada!"
     await update.message.reply_text("Sutil, hein? Sem problemas.")
-    return RECEBER_CONFIRMACAO_PRESENTE_SEM_MSG
+    return RECEBER_CONFIRMACAO_PRESENTE
 
 async def confirmar_presente(update: Updater, context: ContextTypes.DEFAULT_TYPE):
-    context.user_data['mensagem'] = update.message.text
-    msg_confirma = f"""
-<strong>Até agora, essas são as informações:</strong>
-
-🪪 <strong>Usuário:</strong> <code>{context.user_data['usuario_presenteado']}</code>
-🎁 <strong>Presente:</strong> <code>{context.user_data['presente_id']}</code>
-📄 <strong>Mensagem:</strong> <code>{context.user_data['mensagem']}</code>
-
-Você confirma o envio?
-    """
-    await update.message.reply_text(msg_confirma, parse_mode="HTML")
-    return CONFIRMAR_PRESENTE
-
-async def confirmar_presente_sem_msg(update: Updater, context: ContextTypes.DEFAULT_TYPE):
-    context.user_data['mensagem'] = "Não informada!"
+    if update.message.text == "/skip":
+        context.user_data['mensagem'] = "Não informada."
+    else:
+        context.user_data['mensagem'] = update.message.text
     msg_confirma = f"""
 <strong>Até agora, essas são as informações:</strong>
 
@@ -205,5 +193,9 @@ Você confirma o envio?
     return CONFIRMAR_PRESENTE
 
 async def confirmar(update: Updater, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("💓 Presente enviado!")
-    return ConversationHandler.END
+    if update.message.text.lower() == "sim":
+        await update.message.reply_text("💓 Presente enviado!")
+        return ConversationHandler.END
+    else:
+        await update.message.reply_text("<strong>⚠ Ação cancelada.</strong>")
+        return ConversationHandler.END
