@@ -194,3 +194,7 @@ async def confirmar(update: Updater, context: ContextTypes.DEFAULT_TYPE):
     else:
         await update.message.reply_text("<strong>⚠ Ação cancelada.</strong>")
         return ConversationHandler.END
+
+async def mostrar_vitrine(update: Updater, context: ContextTypes.DEFAULT_TYPE):
+    
+    return ConversationHandler.END

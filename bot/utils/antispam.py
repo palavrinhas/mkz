@@ -710,3 +710,10 @@ class ButtonHandler:
         teclado = InlineKeyboardMarkup(botao)
 
         await query.edit_message_text(f, parse_mode="HTML", reply_markup=teclado)
+
+    async def mostrar_vitrine(self, update, context: CallbackContext):
+        user_id = update.callback_query.from_user.id
+        query = update.callback_query
+        resposta = get("https://localhost:3000/loja").json()
+
+        await query.edit_message_caption(resposta, parse_mode="HTML")
