@@ -211,6 +211,6 @@ if __name__ == '__main__':
         fallbacks=[],
     ))
 
-    application.add_handler(CallbackQueryHandler(button_handler.mostrar_vitrine, pattern="^vitrine"))
+    application.add_handler(CallbackQueryHandler(button_handler.mostrar_vitrine, pattern="^ingredientes_vitrine"))
 
     application.run_polling(allowed_updates=Update.ALL_TYPES)

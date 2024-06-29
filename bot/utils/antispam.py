@@ -716,5 +716,5 @@ class ButtonHandler:
         user_id = update.callback_query.from_user.id
         query = update.callback_query
         cartas_disponiveis = Loja.cartas_disponiveis()
-
+        
         await query.edit_message_caption(cartas_disponiveis, parse_mode="HTML")
