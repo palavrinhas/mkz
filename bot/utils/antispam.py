@@ -7,6 +7,7 @@ from api.wishlist import Wishlist
 from telegram import InputMediaPhoto
 from utils.f import formatar_obras_categoria, formatar_ids
 import api.trocar as trocar_cmd
+from api.loja import Loja
 from utils import f
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from utils import formatar
@@ -714,6 +715,6 @@ class ButtonHandler:
     async def mostrar_vitrine(self, update, context: CallbackContext):
         user_id = update.callback_query.from_user.id
         query = update.callback_query
-        resposta = get("https://localhost:3000/loja").json()
+        cartas_disponiveis = Loja.cartas_disponiveis()
 
-        await query.edit_message_caption(resposta, parse_mode="HTML")
+        await query.edit_message_caption(cartas_disponiveis, parse_mode="HTML")
