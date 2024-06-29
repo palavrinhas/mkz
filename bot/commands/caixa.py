@@ -140,6 +140,7 @@ async def iniciar_presente(update: Updater, context: ContextTypes.DEFAULT_TYPE):
 
 async def receber_id_presenteado(update: Updater, context: ContextTypes.DEFAULT_TYPE):
     existe, informacoes = FormatarMSG.chat_info(update.message.text)
+    print(existe, informacoes)
     if existe and informacoes[1] != update.message.chat.id:
         await update.message.reply_text(f"💗 Que maravilha! Pesquisei no sistema e descobri que você quer presentear <a href='tg://user?id={informacoes[1]}'>{informacoes[0]}</a>, acertei? Por gentileza, me informe o ID da carta a ser entregue.", parse_mode="HTML")
         context.user_data['usuario_presenteado'] = update.message.text
