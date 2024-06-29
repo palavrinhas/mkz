@@ -111,7 +111,7 @@ async def devolver(update: Updater, context: ContextTypes.DEFAULT_TYPE):
 async def comprar_pedidos(update: Updater, context: ContextTypes.DEFAULT_TYPE):
     moedas = Conta.buscar_usuario(update.callback_query.from_user.id)
     if moedas['moedas'] < 5:
-        await update.message.reply_text("Você não tem moedas suficientes para comprar um pedido. Considere vender cartas para adquirir mais moedas!")
+        await update.callback_query.message.reply_text("Você não tem moedas suficientes para comprar um pedido. Considere vender cartas para adquirir mais moedas!")
         return ConversationHandler.END
     else:
         context.user_data['usuario'] = update.callback_query.from_user.id
@@ -133,7 +133,7 @@ async def finalizar_compra_giro(update: Updater, context: ContextTypes.DEFAULT_T
 async def iniciar_presente(update: Updater, context: ContextTypes.DEFAULT_TYPE):
     usuario = Conta.buscar_usuario(update.callback_query.from_user.id)['moedas']
     if usuario < 10:
-        await update.message.reply_text("Você não tem moedas suficientes para realizar o presenteamento. Considere adquirir mais moedas para continuar!")
+        await update.callback_query.message.reply_text("Você não tem moedas suficientes para realizar o presenteamento. Considere adquirir mais moedas para continuar!")
         return ConversationHandler.END
     await update.callback_query.message.reply_text("🎁 Vamos enviar um presente! O correio já abriu e estou ansiosa para enviar as correspondências. Me diga, quem terá a sorte de ganhar um card hoje? 👀 Envie-me o ID do usuário que deseja presentear.")
     return RECEBER_ID_PRESENTEADO
