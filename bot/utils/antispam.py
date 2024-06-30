@@ -29,15 +29,23 @@ from telegram.ext import (
     filters,
 )
 
-    
-def create_buttons(items):
-    buttons = []
-    for idx, item in enumerate(items):
-        number_emoji = f"{idx + 1}️⃣"
-        text = f"{number_emoji} - {item['nome_carta']} - {item['nome_obra']}"
-        button = InlineKeyboardButton(text, callback_data=f"carta_{item['carta_id']}")
-        buttons.append([button])  # Cada botão em uma nova linha
-    return buttons
+def create_buttons():
+    json_data = httpx.get("http://localhost:3000/loja").json()
+
+    items = json_data["items"]
+
+    formatted_text = "<strong>Bem-vindo(a)! Esses estas são as opções disponíveis hoje:</strong>\n\n⚠️ <i>Lembre-se, você pode adquirir somente 1 de cada!</i>\n\n"
+    obra_callbacks = []
+    emojis = ["🧁", "🥣", "🥖", "🍞", "🍔", "🥪"] 
+
+    for index, item in enumerate(items, start=1):
+        emoji = emojis[index - 1]
+        formatted_text += f"{emoji} — <strong>{item['nome_carta']}</strong> (<i>{item['nome_obra']}</i>)\n"
+        obra_callbacks.append(InlineKeyboardButton(f"{emoji}", callback_data=f"comprar_{item['carta_id']}"))
+
+    obra_callbacks_divided = [obra_callbacks[i:i+3] for i in range(0, len(obra_callbacks), 3)]
+
+    return formatted_text, obra_callbacks_divided
 
 class ButtonHandler:
     def __init__(self, application):
@@ -722,10 +730,23 @@ class ButtonHandler:
 
         await query.edit_message_text(f, parse_mode="HTML", reply_markup=teclado)
 
+    @apply_anti_spam
     async def mostrar_vitrine(self, update, context: CallbackContext):
         user_id = update.callback_query.from_user.id
         query = update.callback_query
-        texto, cartas_disponiveis = Loja.cartas_disponiveis()
-        botao = create_buttons(cartas_disponiveis)
+        texto_f, botao = create_buttons()
         teclado = InlineKeyboardMarkup(botao)
-        await query.edit_message_caption(texto, parse_mode="HTML", reply_markup=teclado)
+        await query.edit_message_caption(texto_f, parse_mode="HTML", reply_markup=teclado)
+
+    @apply_anti_spam
+    async def comprar_item_vitrine(self, update, context: CallbackContext):
+        user_id = update.callback_query.from_user.id
+        query = update.callback_query
+        data = update.callback_query.data.split("_")[1]
+        resultado, mensagem = Loja.comprar_carta(update.callback_query.from_user.id, data)
+        if resultado:
+            final_ = Carta.buscar_carta(int(mensagem[1]['storeItem']['carta_id']), update.callback_query.from_user.id)
+            final = f"{mensagem[0]}\n\n<code>{final_['carta']['ID']}</code>. <strong>{final_['carta']['nome']}</strong> — <i>{final_['carta']['obra_nome']}</i> (x<code>{final_['quantidade_acumulada']}</code>)"
+            await query.edit_message_caption(final, parse_mode="HTML")
+        else:
+            await query.edit_message_caption(mensagem[0], parse_mode="HTML")

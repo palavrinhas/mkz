@@ -12,14 +12,6 @@ VERIFICAR, CONFIRMO, DEVOLVER  = range(3)
 CONFIRMAR_COMPRA_GIRO, CONFIRMAR_COMPRA_GIRO = range(2)
 RECEBER_ID_PRESENTEADO, RECEBER_MSG_PRESENTE, RECEBER_CONFIRMACAO_PRESENTE, CONFIRMAR_PRESENTE = range(4)
 
-### mais complexo, preciso mexer na API, deixo por último.
-# 4.5 Ingredientes na Vitrine = Cartas pra comprar.
-# Ao clicar nesse botão o bot vai:
-#     → Exibir as cartas que o bot escolheu pra estarem disponíveis;
-#     → Permitir a pessoa a escolher 1 carta e confirmar a compra;
-#     → Remover 5 moedas da conta;
-#     → Adicionar aquela carta pra coleção.
-
 class FormatarMSG:
     def confirmar(user_id, json):
         cartas = "Cartas para serem removidas:\n"

@@ -213,4 +213,6 @@ if __name__ == '__main__':
 
     application.add_handler(CallbackQueryHandler(button_handler.mostrar_vitrine, pattern="^ingredientes_vitrine"))
 
+    application.add_handler(CallbackQueryHandler(button_handler.comprar_item_vitrine, pattern="^comprar_"))
+
     application.run_polling(allowed_updates=Update.ALL_TYPES)

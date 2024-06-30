@@ -71,10 +71,8 @@ class Obra:
 
     def sortear_obras(categoria):
         r = httpx.get(f"http://localhost:3000/sortear/obras/{categoria}").json()
-        print(r)
         if "erro" in r:
             retorno = r["mensagem"]
-            print(retorno)
         else:
             formatted_text = ""
             obra_callbacks = []
