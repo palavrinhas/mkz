@@ -29,6 +29,16 @@ from telegram.ext import (
     filters,
 )
 
+    
+def create_buttons(items):
+    buttons = []
+    for idx, item in enumerate(items):
+        number_emoji = f"{idx + 1}️⃣"
+        text = f"{number_emoji} - {item['nome_carta']} - {item['nome_obra']}"
+        button = InlineKeyboardButton(text, callback_data=f"carta_{item['carta_id']}")
+        buttons.append([button])  # Cada botão em uma nova linha
+    return buttons
+
 class ButtonHandler:
     def __init__(self, application):
         self.application = application
@@ -715,6 +725,7 @@ class ButtonHandler:
     async def mostrar_vitrine(self, update, context: CallbackContext):
         user_id = update.callback_query.from_user.id
         query = update.callback_query
-        cartas_disponiveis = Loja.cartas_disponiveis()
-        
-        await query.edit_message_caption(cartas_disponiveis, parse_mode="HTML")
+        texto, cartas_disponiveis = Loja.cartas_disponiveis()
+        botao = create_buttons(cartas_disponiveis)
+        teclado = InlineKeyboardMarkup(botao)
+        await query.edit_message_caption(texto, parse_mode="HTML", reply_markup=teclado)

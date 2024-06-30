@@ -19,4 +19,4 @@ class Loja:
         r = httpx.get("http://localhost:3000/loja").json()
         for carta in r['items']:
             tabela_cartas += f"{carta['emoji']} <code>{carta['carta_id']}</code>. <strong>{carta['nome_carta']}</strong> - <i>{carta['nome_obra']}</i>\n"
-        return tabela_cartas
+        return tabela_cartas, r['items']
