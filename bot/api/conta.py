@@ -36,7 +36,6 @@ class Conta:
 
     def remover_carta_colecao(user_id: str, carta_removida: str) -> bool:
         data = {'item_id':carta_removida}
-        #h = {'Content-Type':'application/json'}
         httpx.post(f"http://localhost:3000/colecao/{user_id}/remover", json=data).json()
         return True
 
