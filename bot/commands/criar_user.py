@@ -22,8 +22,8 @@ import httpx
 async def cadastrar(update: Updater, context: ContextTypes.DEFAULT_TYPE):
     usuario = context.args[0]
     cadastro = httpx.get(f"http://localhost:3000/cadastrar/usuario/{usuario}").json()
-    Conta.inserir_giros(usuario, 10000)
-    mensagem = f"Usuário cadastrado.\n\nUser ID: {cadastro['mensagem']['user_id']}\nGiros: 10000"
+    Conta.inserir_giros(usuario, 8)
+    mensagem = f"Usuário cadastrado.\n\nUser ID: {cadastro['mensagem']['user_id']}\nGiros: 8"
     await update.message.reply_text(
         text=mensagem,
         parse_mode="HTML"
