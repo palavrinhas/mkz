@@ -1,6 +1,5 @@
 from telegram.ext import Updater, ContextTypes
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
-from api.mercadopago import MercadoPago
 from telegram.ext import (
     Updater,
     CommandHandler,
