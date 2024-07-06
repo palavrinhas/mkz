@@ -14,14 +14,14 @@ from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 VALOR_DOADO = range(1)
 CHAT_ID_BETA = -1002158336777
 
-def gerar_link_unico(update: Updater, context: ContextTypes.DEFAULT_TYPE):
-    novo_link = context.bot.create_chat_invite_link(
+async def gerar_link(update: Updater, context: ContextTypes.DEFAULT_TYPE):
+    novo_membro = context.bot.create_invite_link(
         chat_id=CHAT_ID_BETA,
-        expire_date=None,
         member_limit=1,
-        name="Welcome to the PadoCard!",
+        name="Welcome to the jungle."
     )
-    return novo_link
+    await update.message.reply_text(novo_membro)
+    return
 
 async def doacao(update: Updater, context: ContextTypes.DEFAULT_TYPE):
     if update.message.chat.type != "private":
