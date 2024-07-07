@@ -50,19 +50,26 @@ async def check_donate(update: Updater, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text("<strong>Ei, aceitamos doações somente a partir de</strong> <code>10R$</code>.\n<i>Valores de doações são: 10, 12, 15 e 20.</i>", parse_mode="HTML")
         return ConversationHandler.END
     else:
-        await update.message.reply_text(f"Show! Estou gerando o link de pagamento para essa doação de R${update.message.text}!")
+        await update.message.reply_text(f"Show! Estou gerando o link de pagamento para essa doação de R${update.message.text}....")
+        doacao = Doacao()
+        response_server = doacao.criar_pagamento_livepix(update.message.text)
+        print(response_server)
+        mensagem = f"<strong>Eba! Seu pagamento foi gerado. Por favor, acesse o link abaixo, realize o pagamento e aperte em 'Verificar pagamento'. Após isso, será gerado um link para você acessar o grupo de doadores e suas features extras serão liberadas. Pague em até 24h!</strong>\n\nLink: {response_server['data']['redirectUrl']}"
+        donate_id = doacao.save_donate_log(update.message.from_user.id, response_server['data']['reference'])
+        print(donate_id)
         botao = [
         [
-            InlineKeyboardButton("💰 Verificar pagamento", callback_data="")
+            InlineKeyboardButton("💰 Verificar pagamento", callback_data=f"doacao_{donate_id['indentificador']}")
         ], 
         ]
         teclado = InlineKeyboardMarkup(botao)
-        doacao = Doacao()
-        response_server = doacao.criar_pagamento_livepix(update.message.text)
-        mensagem = f"<strong>Eba! Seu pagamento foi gerado. Por favor, acesse o link abaixo, realize o pagamento e aperte em 'Verificar pagamento'. Após isso, será gerado um link para você acessar o grupo de doadores e suas features extras serão liberadas. Pague em até 24h!</strong>\n\nLink: {response_server['data']['redirectUrl']}"
         await update.message.reply_text(
                 mensagem,
                 parse_mode="HTML",
                 reply_markup=teclado
             )
         return ConversationHandler.END
+
+async def verificar_pagamento(update: Updater, context: ContextTypes.DEFAULT_TYPE):
+    print(update.callback_query.data)
+    return

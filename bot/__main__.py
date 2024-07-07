@@ -8,6 +8,7 @@ from commands.caixa import VERIFICAR, CONFIRMO, DEVOLVER, CONFIRMAR_COMPRA_GIRO,
 from commands.doar import VALOR_DOADO
 from utils.antispam import ButtonHandler
 from api.conta import Conta
+from commands import doar
 
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -223,5 +224,7 @@ if __name__ == '__main__':
         },
         fallbacks=[],
     ))
+
+    application.add_handler(CallbackQueryHandler(doar.verificar_pagamento, pattern="^doacao_"))
 
     application.run_polling(allowed_updates=Update.ALL_TYPES)
