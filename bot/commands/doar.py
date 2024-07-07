@@ -71,5 +71,9 @@ async def check_donate(update: Updater, context: ContextTypes.DEFAULT_TYPE):
         return ConversationHandler.END
 
 async def verificar_pagamento(update: Updater, context: ContextTypes.DEFAULT_TYPE):
-    print(update.callback_query.data)
+    payment_indentifier = update.callback_query.data.split("_")[1]
+    resposta = Doacao.search_donate_by_indentifier(payment_indentifier)
+    donate = Doacao()
+    livepix_response = donate.verificar_pagamento_livepix(resposta['donate_info']['payment_id'])
+    print(livepix_response)
     return
