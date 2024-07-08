@@ -225,6 +225,6 @@ if __name__ == '__main__':
         fallbacks=[],
     ))
 
-    application.add_handler(CallbackQueryHandler(doar.verificar_pagamento, pattern="^doacao_"))
+    # application.add_handler(CallbackQueryHandler(doar.verificar_pagamento, pattern="^doacao_"))
 
     application.run_polling(allowed_updates=Update.ALL_TYPES)

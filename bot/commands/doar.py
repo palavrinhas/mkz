@@ -12,16 +12,7 @@ from api.doacao import Doacao
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 
 VALOR_DOADO = range(1)
-CHAT_ID_BETA = -1002158336777
-
-async def gerar_link(update: Updater, context: ContextTypes.DEFAULT_TYPE):
-    novo_membro = context.bot.create_invite_link(
-        chat_id=CHAT_ID_BETA,
-        member_limit=1,
-        name="Welcome to the jungle."
-    )
-    await update.message.reply_text(novo_membro)
-    return
+CHAT_ID_BETA = -1002088676726
 
 async def doacao(update: Updater, context: ContextTypes.DEFAULT_TYPE):
     if update.message.chat.type != "private":
@@ -50,30 +41,14 @@ async def check_donate(update: Updater, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text("<strong>Ei, aceitamos doações somente a partir de</strong> <code>10R$</code>.\n<i>Valores de doações são: 10, 12, 15 e 20.</i>", parse_mode="HTML")
         return ConversationHandler.END
     else:
-        await update.message.reply_text(f"Show! Estou gerando o link de pagamento para essa doação de R${update.message.text}....")
+        await update.message.reply_text(f"Show! Estou gerando o link de pagamento para essa doação de R${update.message.text}.")
         doacao = Doacao()
         response_server = doacao.criar_pagamento_livepix(update.message.text)
         print(response_server)
-        mensagem = f"<strong>Eba! Seu pagamento foi gerado. Por favor, acesse o link abaixo, realize o pagamento e aperte em 'Verificar pagamento'. Após isso, será gerado um link para você acessar o grupo de doadores e suas features extras serão liberadas. Pague em até 24h!</strong>\n\nLink: {response_server['data']['redirectUrl']}"
+        mensagem = f"<strong>Eba! Seu pagamento foi gerado. Por favor, acesse o link abaixo, realize o pagamento. Eu irei detectar automaticamente o seu pagamento e já liberar suas features.</strong>\n\nLink: {response_server['data']['redirectUrl']}"
         donate_id = doacao.save_donate_log(update.message.from_user.id, response_server['data']['reference'])
-        print(donate_id)
-        botao = [
-        [
-            InlineKeyboardButton("💰 Verificar pagamento", callback_data=f"doacao_{donate_id['indentificador']}")
-        ], 
-        ]
-        teclado = InlineKeyboardMarkup(botao)
         await update.message.reply_text(
                 mensagem,
                 parse_mode="HTML",
-                reply_markup=teclado
             )
         return ConversationHandler.END
-
-async def verificar_pagamento(update: Updater, context: ContextTypes.DEFAULT_TYPE):
-    payment_indentifier = update.callback_query.data.split("_")[1]
-    resposta = Doacao.search_donate_by_indentifier(payment_indentifier)
-    donate = Doacao()
-    livepix_response = donate.verificar_pagamento_livepix(resposta['donate_info']['payment_id'])
-    print(livepix_response)
-    return
