@@ -12,7 +12,6 @@ from api.doacao import Doacao
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 
 VALOR_DOADO = range(1)
-CHAT_ID_BETA = -1002088676726
 
 async def doacao(update: Updater, context: ContextTypes.DEFAULT_TYPE):
     if update.message.chat.type != "private":
