@@ -43,7 +43,6 @@ async def check_donate(update: Updater, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text(f"Show! Estou gerando o link de pagamento para essa doação de R${update.message.text}.")
         doacao = Doacao()
         response_server = doacao.criar_pagamento_livepix(update.message.text)
-        print(response_server)
         mensagem = f"<strong>Eba! Seu pagamento foi gerado. Por favor, acesse o link abaixo, realize o pagamento. Eu irei detectar automaticamente o seu pagamento e já liberar suas features.</strong>\n\nLink: {response_server['data']['redirectUrl']}"
         donate_id = doacao.save_donate_log(update.message.from_user.id, response_server['data']['reference'])
         await update.message.reply_text(
